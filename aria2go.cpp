@@ -22,3 +22,14 @@ void init_aria2go(void* a){
      Aria2Interface * object = (Aria2Interface *)a;
      object->init_libaria2();
 }
+
+void* init_aria2go_session (void* a){
+    Aria2Interface * object = (Aria2Interface *)a;
+    return object->init_libaria2_session();
+}
+
+int run_aria2go(void* a,void* s){
+    Aria2Interface * object = (Aria2Interface *)a;
+    object->set_session(s);
+    return object->run_libaria2();
+}

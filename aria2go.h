@@ -7,6 +7,8 @@
         void* new_aria2go(void);
         void del_aria2go(void *);
         void init_aria2go(void *);
+        void* init_aria2go_session (void*);
+        int run_aria2go(void*,void*);
     #ifdef __cplusplus
     }
     #endif
