@@ -46,3 +46,8 @@ func TestHexToGid(t *testing.T){
 	gid_converted := downloader.hexToGid(hex)
 	assert.Equal(t,gid,gid_converted)
 }
+
+func TestArrayDummy(t *testing.T){
+	gids := downloader.arraytest()
+	assert.Equal(t,gids,[]int{1,12,35,16,43,67})
+}

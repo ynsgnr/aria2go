@@ -75,6 +75,15 @@ void* Aria2Interface::addMetalink_libaria2(char* file_location,int position,int*
     return (void*) gids->data();
 }
 
+void* Aria2Interface::arraytest(int* l, int* s){
+    std::vector<int>* array;
+    std::vector<int> array_object {1,12,35,16,43,67};
+    array = &array_object;
+    *l = array->size();
+    *s = sizeof(int);
+    return (void*) array->data();
+}
+
 Aria2Interface::~Aria2Interface(){
     clear_session();
     aria2::libraryDeinit();

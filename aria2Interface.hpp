@@ -12,6 +12,7 @@ class Aria2Interface {
         bool isNull_libaria2(void* g);
         void* addUri_libaria2(char*,int);
         void* addMetalink_libaria2(char*,int,int*,int*);
+        void* arraytest(int*,int*);
     private:
         aria2::Session* session = NULL;
         void clear_session();

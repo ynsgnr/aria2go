@@ -86,3 +86,14 @@ func (d Downloader)addMetalinkInPosition(file_location string,position int) []Gi
 func (d Downloader)addMetaLink(file_location string) []Gid{
 	return d.addMetalinkInPosition(file_location,-1)
 }
+
+func (d Downloader)arraytest() []int{
+	//Only for test purposes, returns static array from c++
+	var gids []int
+	l :=int(C.arraytest(d.ptr))
+	for i := 0; i < l; i++ {
+		value := int(C.get_element_int_value(C.int(i)))
+		gids = append(gids, value)
+	}
+	return gids
+}
