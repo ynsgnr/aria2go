@@ -18,6 +18,7 @@ void* new_aria2go(void){
 
 void del_aria2go(void* a){
     TO_OBJECT(a)
+    if(current_array!=NULL) delete current_array;
     delete object;
 }
 
@@ -55,4 +56,18 @@ int isNull_aria2go(void* a, void* g){
 void* addUri_aria2go(void* a, char* uri, int position=-1){
     TO_OBJECT(a)
     return object->addUri_libaria2(uri,position);
+}
+
+int addMetalink_aria2go(void* a,char* file_location,int position=-1){
+    TO_OBJECT(a)
+    int* l;
+    int* s;
+    if(current_array!=NULL) delete current_array; //TODO fix here
+    current_array = object->addMetalink_libaria2(file_location,position,l,s);
+    current_index_size = *s;
+    return *l;
+}
+
+void* get_element(int index){
+    return current_array+current_index_size*index;
 }

@@ -13,6 +13,10 @@
         void* hexToGid_aria2go(void*,char*);
         int isNull_aria2go(void*,void*);
         void* addUri_aria2go(void*,char*,int);
+        int addMetalink_aria2go(void*,char*,int);
+        void* get_element(int index);
+        void* current_array;
+        int current_index_size;
     #ifdef __cplusplus
     }
     #endif

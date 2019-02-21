@@ -44,6 +44,7 @@ const char* Aria2Interface::gidToHex_libaria2(void* g){
 void Aria2Interface::clear_session(){
     if(session!=NULL){
         aria2::sessionFinal(session);
+        delete session;
     }
 }
 
@@ -63,6 +64,15 @@ void* Aria2Interface::addUri_libaria2(char* uri,int position=-1){
     int is_error = aria2::addUri(session,gid,std::vector<std::string> {std::string (uri)},aria2::KeyVals(),position);
     if (is_error || gid==NULL) throw "Failed to add download uri";
     return (void *) gid;    
+}
+
+void* Aria2Interface::addMetalink_libaria2(char* file_location,int position,int* length,int* size){
+    std::vector<aria2::A2Gid>* gids;
+    int is_error = aria2::addMetalink(session,gids,std::string (file_location),aria2::KeyVals(),position);
+    if(is_error || gids!=NULL) throw "Unable to add metalink";
+    *length = gids->size();
+    *size = sizeof(aria2::A2Gid);
+    return (void*) gids->data();
 }
 
 Aria2Interface::~Aria2Interface(){

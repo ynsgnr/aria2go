@@ -71,3 +71,18 @@ func (d Downloader)addUri(uri string) Gid{
 	ret.ptr = C.addUri_aria2go(d.ptr,C.CString(uri),C.int(-1))
 	return ret
 }
+
+func (d Downloader)addMetalinkInPosition(file_location string,position int) []Gid{
+	var gids []Gid
+	var gid Gid
+	l :=int(C.addMetalink_aria2go(d.ptr,C.CString(file_location),C.int(position)))
+	for i := 0; i < l; i++ {
+		gid.ptr = C.get_element(C.int(i))
+		gids = append(gids, gid)
+	}
+	return gids
+}
+
+func (d Downloader)addMetaLink(file_location string) []Gid{
+	return d.addMetalinkInPosition(file_location,-1)
+}
