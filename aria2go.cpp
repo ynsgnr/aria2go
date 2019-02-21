@@ -1,6 +1,9 @@
 
+#define TO_OBJECT(a) Aria2Interface * object = (Aria2Interface *)a;
+
 #include "aria2Interface.hpp"
 #include "aria2go.h"
+#include <string.h>
 
 // C wrapper for go
 
@@ -13,23 +16,28 @@ void * new_aria2go(void){
     return r;
 }
 
-void del_aria2go(void* s){
-    Aria2Interface * sacrifice = (Aria2Interface *)s;
-    delete sacrifice;
+void del_aria2go(void* a){
+    TO_OBJECT(a)
+    delete object;
 }
 
 void init_aria2go(void* a){
-     Aria2Interface * object = (Aria2Interface *)a;
-     object->init_libaria2();
+    TO_OBJECT(a)
+    object->init_libaria2();
 }
 
 void* init_aria2go_session (void* a){
-    Aria2Interface * object = (Aria2Interface *)a;
+    TO_OBJECT(a)
     return object->init_libaria2_session();
 }
 
 int run_aria2go(void* a,void* s){
-    Aria2Interface * object = (Aria2Interface *)a;
+    TO_OBJECT(a)
     object->set_session(s);
     return object->run_libaria2();
+}
+
+const char * gidToHex_aria2go(void* a,void* gid){
+    TO_OBJECT(a)
+    return object->gidToHex_libaria2(gid);
 }

@@ -2,6 +2,7 @@ package aria2
 // #cgo CXXFLAGS: -std=c++11
 // #cgo LDFLAGS: -L. -l aria2 -l aria2go
 // #include "aria2go.h"
+// #include <stdlib.h>
 import "C"
 import "unsafe"
 
@@ -10,6 +11,10 @@ type Downloader struct {
 }
 
 type Session struct {
+	ptr unsafe.Pointer
+}
+
+type Gid struct {
 	ptr unsafe.Pointer
 }
 
@@ -35,4 +40,11 @@ func (d Downloader)init_aria2go_session()Session{
 
 func (d Downloader)run(s Session){
 	C.run_aria2go(d.ptr,s.ptr)
+}
+
+func (d Downloader)gidToHex(gid Gid) string{
+	p := C.gidToHex_aria2go(d.ptr,gid.ptr)
+	s := C.GoString(p)
+	C.free(unsafe.Pointer(p))
+	return s
 }

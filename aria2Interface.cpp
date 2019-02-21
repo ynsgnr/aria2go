@@ -36,6 +36,11 @@ int Aria2Interface::run_libaria2(){
     return aria2::run(Aria2Interface::session,aria2::RUN_ONCE);
 }
 
+const char* Aria2Interface::gidToHex_libaria2(void* g){
+    aria2::A2Gid gid = (aria2::A2Gid) g;
+    return aria2::gidToHex(gid).c_str();
+}
+
 void Aria2Interface::clear_session(){
     if(session!=NULL){
         aria2::sessionFinal(session);
