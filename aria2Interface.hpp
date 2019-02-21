@@ -8,5 +8,6 @@ class Aria2Interface {
         int run_libaria2();
         void set_session(void*);
     private:
-        aria2::Session* session;
+        aria2::Session* session = NULL;
+        void clear_session();
 };

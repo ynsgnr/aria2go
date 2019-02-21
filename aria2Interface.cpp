@@ -10,7 +10,8 @@ int Aria2Interface::init_libaria2(){
 }
 
 void Aria2Interface::set_session(void * s){
-    Aria2Interface::session=(aria2::Session*)s;
+    clear_session();
+    session=(aria2::Session*)s;
 }
 
 int downloadEventCallback(aria2::Session* s, aria2::DownloadEvent e,
@@ -25,7 +26,7 @@ void* Aria2Interface::init_libaria2_session(){
     config.downloadEventCallback = downloadEventCallback;
     aria2::Session* s = aria2::sessionNew(aria2::KeyVals(),config);
     if(s==NULL){
-        throw "Unable to create sesion";
+        throw "Unable to create session";
     }
     return (void *)s;
 }
@@ -35,7 +36,14 @@ int Aria2Interface::run_libaria2(){
     return aria2::run(Aria2Interface::session,aria2::RUN_ONCE);
 }
 
+void Aria2Interface::clear_session(){
+    if(session!=NULL){
+        aria2::sessionFinal(session);
+    }
+}
+
 Aria2Interface::~Aria2Interface(){
+    clear_session();
     aria2::libraryDeinit();
 }
 
