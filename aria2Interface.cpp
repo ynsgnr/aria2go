@@ -47,6 +47,17 @@ void Aria2Interface::clear_session(){
     }
 }
 
+void * Aria2Interface::hexToGid_libaria2(char* s){
+    if(s==NULL){
+        throw "Undefined String for Hex To Gid transform";
+    }
+    return (void *) aria2::hexToGid(std::string (s));
+}
+
+bool Aria2Interface::isNull_libaria2(void* g){
+    return aria2::isNull( (aria2::A2Gid) g);
+}
+
 Aria2Interface::~Aria2Interface(){
     clear_session();
     aria2::libraryDeinit();

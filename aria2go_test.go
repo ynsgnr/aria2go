@@ -1,19 +1,20 @@
 package aria2
 
 import "testing"
+//import "gotest.tools/assert"
 
 var downloader Downloader
 var session Session
 
-func TestMain(m *testing.M){
+func TestMain(t *testing.M){
 	downloader = New()
 	downloader.init_aria2go()
 }
 
-func TestSession(m *testing.T){
+func TestSession(t *testing.T){
 	session = downloader.init_aria2go_session()
 }
 
-func TestRun(m *testing.T){
+func TestRun(t *testing.T){
 	downloader.run(session)
 }

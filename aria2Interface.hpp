@@ -8,6 +8,8 @@ class Aria2Interface {
         int run_libaria2();
         void set_session(void*);
         const char* gidToHex_libaria2(void*);
+        void * hexToGid_libaria2(char* s);
+        bool isNull_libaria2(void* g);
     private:
         aria2::Session* session = NULL;
         void clear_session();

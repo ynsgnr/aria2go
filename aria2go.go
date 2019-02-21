@@ -48,3 +48,14 @@ func (d Downloader)gidToHex(gid Gid) string{
 	C.free(unsafe.Pointer(p))
 	return s
 }
+
+func (d Downloader)hexToGid(s string) Gid{
+	var ret Gid
+	ret.ptr = C.hexToGid_aria2go(d.ptr,C.CString(s))
+	return ret
+}
+
+func (d Downloader)isNull(g Gid) bool{
+	if C.isNull_aria2go(d.ptr,g.ptr)==0 { return false }
+	return true
+}

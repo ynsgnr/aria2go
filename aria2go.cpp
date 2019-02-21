@@ -41,3 +41,13 @@ const char * gidToHex_aria2go(void* a,void* gid){
     TO_OBJECT(a)
     return object->gidToHex_libaria2(gid);
 }
+
+void * hexToGid_aria2go(void* a,char * s){
+    TO_OBJECT(a)
+    return object->hexToGid_libaria2(s);
+}
+
+int isNull_aria2go(void* a, void* g){
+    TO_OBJECT(a)
+    return object->isNull_libaria2(g);
+}
