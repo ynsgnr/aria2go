@@ -1,4 +1,6 @@
 
+#define TO_GID(gid_to_convert) aria2::A2Gid gid = (aria2::A2Gid) gid_to_convert;
+
 //#include <aria2/aria2.h> - if shared library is present on system
 #include "aria2.h"
 
@@ -25,9 +27,7 @@ void* Aria2Interface::init_libaria2_session(){
     aria2::SessionConfig config;
     config.downloadEventCallback = downloadEventCallback;
     aria2::Session* s = aria2::sessionNew(aria2::KeyVals(),config);
-    if(s==NULL){
-        throw "Unable to create session";
-    }
+    if(s==NULL){ throw "Unable to create session"; }
     return (void *)s;
 }
 
@@ -37,7 +37,7 @@ int Aria2Interface::run_libaria2(){
 }
 
 const char* Aria2Interface::gidToHex_libaria2(void* g){
-    aria2::A2Gid gid = (aria2::A2Gid) g;
+    TO_GID(g)
     return aria2::gidToHex(gid).c_str();
 }
 
@@ -47,15 +47,22 @@ void Aria2Interface::clear_session(){
     }
 }
 
-void * Aria2Interface::hexToGid_libaria2(char* s){
-    if(s==NULL){
-        throw "Undefined String for Hex To Gid transform";
-    }
+void* Aria2Interface::hexToGid_libaria2(char* s){
+    if(s==NULL){ throw "Undefined String for Hex To Gid transform"; }
     return (void *) aria2::hexToGid(std::string (s));
 }
 
 bool Aria2Interface::isNull_libaria2(void* g){
     return aria2::isNull( (aria2::A2Gid) g);
+}
+
+void* Aria2Interface::addUri_libaria2(char* uri,int position=-1){
+    //TODO implement options
+    if(uri==NULL){ throw "Undefined String for adding uri"; }
+    aria2::A2Gid* gid;
+    int is_error = aria2::addUri(session,gid,std::vector<std::string> {std::string (uri)},aria2::KeyVals(),position);
+    if (is_error || gid==NULL) throw "Failed to add download uri";
+    return (void *) gid;    
 }
 
 Aria2Interface::~Aria2Interface(){

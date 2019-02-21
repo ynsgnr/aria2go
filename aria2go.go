@@ -59,3 +59,15 @@ func (d Downloader)isNull(g Gid) bool{
 	if C.isNull_aria2go(d.ptr,g.ptr)==0 { return false }
 	return true
 }
+
+func (d Downloader)addUriInPosition(uri string,position int) Gid{
+	var ret Gid
+	ret.ptr = C.addUri_aria2go(d.ptr,C.CString(uri),C.int(position))
+	return ret
+}
+
+func (d Downloader)addUri(uri string) Gid{
+	var ret Gid
+	ret.ptr = C.addUri_aria2go(d.ptr,C.CString(uri),C.int(-1))
+	return ret
+}

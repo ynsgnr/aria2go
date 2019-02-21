@@ -10,6 +10,7 @@ class Aria2Interface {
         const char* gidToHex_libaria2(void*);
         void * hexToGid_libaria2(char* s);
         bool isNull_libaria2(void* g);
+        void* addUri_libaria2(char*,int);
     private:
         aria2::Session* session = NULL;
         void clear_session();

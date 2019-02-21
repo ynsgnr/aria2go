@@ -11,7 +11,7 @@
 //Each Downloader object must be cast to DownloaderLib pointer
 //Pointers must be DownloaderLib
 
-void * new_aria2go(void){
+void* new_aria2go(void){
     auto r = new Aria2Interface;
     return r;
 }
@@ -37,12 +37,12 @@ int run_aria2go(void* a,void* s){
     return object->run_libaria2();
 }
 
-const char * gidToHex_aria2go(void* a,void* gid){
+const char* gidToHex_aria2go(void* a,void* gid){
     TO_OBJECT(a)
     return object->gidToHex_libaria2(gid);
 }
 
-void * hexToGid_aria2go(void* a,char * s){
+void* hexToGid_aria2go(void* a,char * s){
     TO_OBJECT(a)
     return object->hexToGid_libaria2(s);
 }
@@ -50,4 +50,9 @@ void * hexToGid_aria2go(void* a,char * s){
 int isNull_aria2go(void* a, void* g){
     TO_OBJECT(a)
     return object->isNull_libaria2(g);
+}
+
+void* addUri_aria2go(void* a, char* uri, int position=-1){
+    TO_OBJECT(a)
+    return object->addUri_libaria2(uri,position);
 }
