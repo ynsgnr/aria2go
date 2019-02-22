@@ -5,8 +5,7 @@
 #include "aria2.h"
 #include "aria2Interface.hpp"
 
-#include<string.h>
-#include <iostream>
+#include <string.h>
 
 int Aria2Interface::init_libaria2(){
     aria2::libraryInit();
@@ -41,7 +40,7 @@ int Aria2Interface::run_libaria2(){
 char* Aria2Interface::gidToHex_libaria2(void* g){
     TO_GID(g)
     std::string h = aria2::gidToHex(gid);
-    char hex[h.length()];
+    char* hex = new char(h.length());
     strcpy(hex,h.c_str());
     return hex;
 }

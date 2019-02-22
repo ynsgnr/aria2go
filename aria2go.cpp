@@ -4,7 +4,6 @@
 #include "aria2Interface.hpp"
 #include "aria2go.h"
 #include "aria2.h"
-#include <string.h>
 
 // C wrapper for go
 
@@ -41,7 +40,8 @@ int run_aria2go(void* a,void* s){
 
 char* gidToHex_aria2go(void* a,void* gid){
     TO_OBJECT(a)
-    return object->gidToHex_libaria2(gid);
+    char* h = object->gidToHex_libaria2(gid);
+    return h;
 }
 
 void* hexToGid_aria2go(void* a,char * s){

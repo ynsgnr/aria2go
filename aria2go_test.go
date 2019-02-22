@@ -3,6 +3,7 @@ package aria2
 import "testing"
 import "gotest.tools/assert"
 import "os"
+import "fmt"
 
 var downloader Downloader
 var session Session
@@ -32,7 +33,7 @@ func TestAll(t *testing.T){
 		//Todo add get current position and check it		
 	})
 	t.Run("is gid null",func(t *testing.T){		
-		assert.Equal(t,downloader.isNull(gid),true)
+		assert.Equal(t,downloader.isNull(gid),false)
 	})
 	t.Run("gid to hex",func(t *testing.T){		
 		downloader.gidToHex(gid)
@@ -40,6 +41,7 @@ func TestAll(t *testing.T){
 	})
 	t.Run("hex to gid",func(t *testing.T){
 		hex := downloader.gidToHex(gid)
+		fmt.Printf("%s\n",hex)
 		gid_converted := downloader.hexToGid(hex)
 		assert.Equal(t,gid,gid_converted)
 	})
