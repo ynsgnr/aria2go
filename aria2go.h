@@ -18,7 +18,7 @@
         int get_element_int_value(int);
         int arraytest(void*);
         void add_uri(void*,char*);
-        void clear_uris(void*);
+        void clear_uris();
         void* add_all_from_cache(void*,int);
         void* addTorrent_aria2go(void*,char*,int);
         int getActiveDownload_aria2go(void*);

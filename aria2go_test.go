@@ -60,8 +60,3 @@ func TestAll(t *testing.T){
 		downloader.getActiveDownload()
 	})
 }
-
-func TestArrayDummy(t *testing.T){
-	gids := downloader.arraytest()
-	assert.DeepEqual(t,gids,[]int{1,12,35,16,43,67})
-}

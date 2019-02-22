@@ -1,9 +1,10 @@
 
-#define TO_OBJECT(a) Aria2Interface * object = (Aria2Interface *)a;
+#define TO_OBJECT(a) 
+#define TO_GID(gid_to_convert) aria2::A2Gid gid = (aria2::A2Gid) gid_to_convert;
 
-#include "aria2Interface.hpp"
 #include "aria2go.h"
 #include "aria2.h"
+#include <string.h>
 
 // C wrapper for go
 
@@ -11,63 +12,81 @@
 //Each Downloader object must be cast to DownloaderLib pointer
 //Pointers must be DownloaderLib
 
+aria2::A2Gid* current_gid_array;
+int current_gid_array_length;
+aria2::Session* session = NULL;
+std::vector<std::string> uris;
+
 void* new_aria2go(void){
-    auto r = new Aria2Interface;
-    return r;
+    return NULL;
 }
 
 void del_aria2go(void* a){
-    TO_OBJECT(a)
-    delete object;
+}
+
+int downloadEventCallback(aria2::Session* s, aria2::DownloadEvent e,
+                          aria2::A2Gid gid, void* userData){
+    return 0;
 }
 
 void init_aria2go(void* a){
-    TO_OBJECT(a)
-    object->init_libaria2();
+    aria2::libraryInit();
 }
 
 void* init_aria2go_session (void* a){
-    TO_OBJECT(a)
-    return object->init_libaria2_session();
+    aria2::SessionConfig config;
+    config.downloadEventCallback = downloadEventCallback;
+    aria2::Session* s = aria2::sessionNew(aria2::KeyVals(),config);
+    if(s==NULL){ throw "Unable to create session"; }
+    return (void *)s;
 }
 
 int run_aria2go(void* a,void* s){
-    TO_OBJECT(a)
-    object->set_session(s);
-    return object->run_libaria2();
+    session = (aria2::Session*)s;
+    return aria2::run(session,aria2::RUN_ONCE);
 }
 
-char* gidToHex_aria2go(void* a,void* gid){
-    TO_OBJECT(a)
-    char* h = object->gidToHex_libaria2(gid);
-    return h;
+char* gidToHex_aria2go(void* a,void* g){
+    TO_GID(g)
+    std::string h = aria2::gidToHex(gid);
+    char* hex = new char(h.length());
+    strcpy(hex,h.c_str());
+    return hex;
 }
 
 void* hexToGid_aria2go(void* a,char * s){
-    TO_OBJECT(a)
-    return object->hexToGid_libaria2(s);
+    if(s==NULL){ throw "Undefined String for Hex To Gid transform"; }
+    return (void *) aria2::hexToGid(std::string (s));
 }
 
 int isNull_aria2go(void* a, void* g){
-    TO_OBJECT(a)
-    return object->isNull_libaria2(g);
+    return aria2::isNull( (aria2::A2Gid) g);
 }
 
 void* addUri_aria2go(void* a, char* uri, int position=-1){
-    TO_OBJECT(a)
-    return object->addUri_libaria2(uri,position);
+    //TODO implement options
+    if(uri==NULL){ throw "Undefined String for adding uri"; }
+    uris.push_back(std::string (uri));
+    aria2::A2Gid gid;
+    int is_error = aria2::addUri(session,&gid,uris,aria2::KeyVals(),position);
+    if (is_error || aria2::isNull(gid)){
+        std::string error_message = "Failed to add download uri";
+        error_message += std::to_string(is_error);
+        throw error_message;
+    }
+    clear_uris();
+    return (void *) gid;    
 }
-
-void* current_array;
-int current_array_length;
-aria2::A2Gid* current_gid_array;
-int current_gid_array_length;
 
 int addMetalink_aria2go(void* a,char* file_location,int position=-1){
     TO_OBJECT(a)
     int* l = new int();
     if(current_gid_array!=NULL) delete current_gid_array; //TODO fix here
-    current_gid_array = object->addMetalink_libaria2(file_location,position,l);
+    std::vector<aria2::A2Gid>* gids;
+    int is_error = aria2::addMetalink(session,gids,std::string (file_location),aria2::KeyVals(),position);
+    if(is_error || gids==NULL) throw "Unable to add metalink";
+    *l = gids->size();
+    current_gid_array = gids->data();
     current_gid_array_length = *l;
     delete l;
     return current_gid_array_length;
@@ -78,47 +97,51 @@ void* get_element_gid(int index){
     return (void*)current_gid_array[index];
 }
 
-int get_element_int_value(int index){
-    if(index>=current_array_length) throw "Out Of Index";
-    int* array = (int*)current_array;
-    return *(array+index);
-}
-
-int arraytest(void* a){
-    TO_OBJECT(a)
-    int* l = new int();
-    current_array = object->arraytest(l);
-    current_array_length = *l;
-    delete l;
-    return current_array_length;
-}
-
 void add_uri(void* a,char* uri){
-    TO_OBJECT(a)
-    object->add_uri(uri);
+    uris.push_back(std::string (uri));   
 }
 
-void clear_uris(void* a){
-    TO_OBJECT(a)
-    object->clear_uris();
+void clear_uris(){
+    uris.clear();
 }
 
 void* add_all_from_cache(void* a,int position=-1){
-    TO_OBJECT(a)
-    return object->add_all_from_cache(position);
+    //TODO implement options
+    aria2::A2Gid gid;
+    int is_error = aria2::addUri(session,&gid,uris,aria2::KeyVals(),position);
+    if (is_error || aria2::isNull(gid)){
+        std::string error_message = "Failed to add download uri";
+        error_message += std::to_string(is_error);
+        throw error_message;
+    }
+    clear_uris();
+    return (void *) gid;    
 }
 
 void* addTorrent_aria2go(void* a,char* file,int position=-1){
-    TO_OBJECT(a)
-    return object->addTorrent_libaria2(file,position);
+    aria2::A2Gid gid;
+    int is_error;
+    if(uris.size()>0){
+        is_error = aria2::addTorrent(session,&gid,std::string (file),uris,aria2::KeyVals(),position);
+    }else{
+        is_error = aria2::addTorrent(session,&gid,std::string (file),aria2::KeyVals(),position);
+    }
+    if (is_error || aria2::isNull(gid)){
+        std::string error_message = "Failed to add download uri";
+        error_message += std::to_string(is_error);
+        throw error_message;
+    }
+    clear_uris();
+    return (void *) gid;
 }
 
 int getActiveDownload_aria2go(void* a){
-    TO_OBJECT(a)
     int* l = new int();    
     if(current_gid_array!=NULL) delete current_gid_array;
-    current_gid_array = object->getActiveDownload_libaria2(l);
+    std::vector<aria2::A2Gid> gids = aria2::getActiveDownload(session);
+    *l = gids.size();
+    current_gid_array = gids.data();
     current_gid_array_length = *l;
     delete l;
-    return current_array_length;
+    return current_gid_array_length;
 }
