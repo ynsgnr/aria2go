@@ -78,7 +78,7 @@ void* Aria2Interface::addUri_libaria2(char* uri,int position=-1){
 void* Aria2Interface::addMetalink_libaria2(char* file_location,int position,int* length,int* size){
     std::vector<aria2::A2Gid>* gids;
     int is_error = aria2::addMetalink(session,gids,std::string (file_location),aria2::KeyVals(),position);
-    if(is_error || gids!=NULL) throw "Unable to add metalink";
+    if(is_error || gids==NULL) throw "Unable to add metalink";
     *length = gids->size();
     *size = sizeof(aria2::A2Gid);
     return (void*) gids->data();
@@ -86,7 +86,7 @@ void* Aria2Interface::addMetalink_libaria2(char* file_location,int position,int*
 
 void* Aria2Interface::arraytest(int* l, int* s){
     std::vector<int>* array;
-    std::vector<int> array_object {1,12,35,16,43,69};
+    std::vector<int> array_object {1,12,35,16,43,67};
     array = &array_object;
     *l = array->size();
     *s = sizeof(int);

@@ -77,7 +77,7 @@ func (d Downloader)addMetalinkInPosition(file_location string,position int) []Gi
 	var gid Gid
 	l :=int(C.addMetalink_aria2go(d.ptr,C.CString(file_location),C.int(position)))
 	for i := 0; i < l; i++ {
-		gid.ptr = C.get_element(C.int(i))
+		gid.ptr = C.get_element_gid(C.int(i))
 		gids = append(gids, gid)
 	}
 	return gids

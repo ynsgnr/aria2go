@@ -3,6 +3,7 @@
 
 #include "aria2Interface.hpp"
 #include "aria2go.h"
+#include "aria2.h"
 #include <string.h>
 
 // C wrapper for go
@@ -60,31 +61,37 @@ void* addUri_aria2go(void* a, char* uri, int position=-1){
 
 int addMetalink_aria2go(void* a,char* file_location,int position=-1){
     TO_OBJECT(a)
-    int* l;
-    int* s;
+    int* l = new int();
+    int* s = new int();
     if(current_array!=NULL) delete current_array; //TODO fix here
     current_array = object->addMetalink_libaria2(file_location,position,l,s);
-    current_index_size = *s;
+    current_index_size = *s/sizeof(void*);
     current_array_length = *l;
-    return *l;
+    delete l;
+    delete s;
+    return current_array_length;
 }
 
-void* get_element(int index){
+void* get_element_gid(int index){
     if(index>=current_array_length) throw "Out Of Index";
-    return current_array+current_index_size*index;
+    aria2::A2Gid* array = (aria2::A2Gid*)current_array;
+    return array+index;
 }
 
 int get_element_int_value(int index){
     if(index>=current_array_length) throw "Out Of Index";
-    return *((int*)current_array+current_index_size*index);
+    int* array = (int*)current_array;
+    return *(array+index);
 }
 
 int arraytest(void* a){
     TO_OBJECT(a)
-    int* l;
-    int* s;
+    int* l = new int();
+    int* s = new int();
     current_array = object->arraytest(l,s);
-    current_index_size = *s;
+    current_index_size = (*s)/sizeof(void*);
     current_array_length = *l;
-    return *l;
+    delete l;
+    delete s;
+    return current_array_length;
 }
