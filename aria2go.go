@@ -98,4 +98,23 @@ func (d Downloader)arraytest() []int{
 	return gids
 }
 
+func (d Downloader)addUriToCache(uri string){
+	C.add_uri(d.ptr,C.CString(uri))
+}
+
+func (d Downloader)clearUriCache(){
+	C.clear_uris(d.ptr)
+}
+
+func (d Downloader)addAllFromCacheWithPosition(p int) Gid{
+	var ret Gid
+	ret.ptr = C.add_all_from_cache(d.ptr,C.int(p))
+	return ret
+}
+func (d Downloader)addAllFromCache() Gid{
+	var ret Gid
+	ret.ptr = C.add_all_from_cache(d.ptr,C.int(-1))
+	return ret
+}
+
 

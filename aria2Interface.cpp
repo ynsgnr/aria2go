@@ -64,13 +64,15 @@ bool Aria2Interface::isNull_libaria2(void* g){
 void* Aria2Interface::addUri_libaria2(char* uri,int position=-1){
     //TODO implement options
     if(uri==NULL){ throw "Undefined String for adding uri"; }
+    uris.push_back(std::string (uri));
     aria2::A2Gid gid;
-    int is_error = aria2::addUri(session,&gid,std::vector<std::string> {std::string (uri)},aria2::KeyVals(),position);
+    int is_error = aria2::addUri(session,&gid,uris,aria2::KeyVals(),position);
     if (is_error || aria2::isNull(gid)){
         std::string error_message = "Failed to add download uri";
         error_message += std::to_string(is_error);
         throw error_message;
     }
+    clear_uris();
     return (void *) gid;    
 }
 
@@ -90,6 +92,44 @@ void* Aria2Interface::arraytest(int* l, int* s){
     *l = array->size();
     *s = sizeof(int);
     return (void*) array->data();
+}
+
+void* Aria2Interface::addTorrent_libaria2(char* file_location,int position=-1){
+    aria2::A2Gid gid;
+    int is_error;
+    if(uris.size()>0){
+        is_error = aria2::addTorrent(session,&gid,std::string (file_location),uris,aria2::KeyVals(),position);
+    }else{
+        is_error = aria2::addTorrent(session,&gid,std::string (file_location),aria2::KeyVals(),position);
+    }
+    if (is_error || aria2::isNull(gid)){
+        std::string error_message = "Failed to add download uri";
+        error_message += std::to_string(is_error);
+        throw error_message;
+    }
+    clear_uris();
+    return (void *) gid;
+}
+
+void Aria2Interface::add_uri(char* uri){
+    uris.push_back(std::string (uri));
+}
+
+void Aria2Interface::clear_uris(){
+    uris.clear();
+}
+
+void* Aria2Interface::add_all_from_cache(int position=-1){
+    //TODO implement options
+    aria2::A2Gid gid;
+    int is_error = aria2::addUri(session,&gid,uris,aria2::KeyVals(),position);
+    if (is_error || aria2::isNull(gid)){
+        std::string error_message = "Failed to add download uri";
+        error_message += std::to_string(is_error);
+        throw error_message;
+    }
+    clear_uris();
+    return (void *) gid;    
 }
 
 Aria2Interface::~Aria2Interface(){

@@ -45,6 +45,17 @@ func TestAll(t *testing.T){
 		gid_converted := downloader.hexToGid(hex)
 		assert.Equal(t,gid,gid_converted)
 	})
+	t.Run("Uri Cache",func(t *testing.T){
+		downloader.addUriToCache("Test")
+	})
+	t.Run("Claer Uri Cache",func(t *testing.T){
+		downloader.clearUriCache()
+	})
+	t.Run("Add All From Cache",func(t *testing.T){
+		downloader.addUriToCache("https://www.w3.org/History/1989/Image3.gif")
+		downloader.addUriToCache("https://www.w3.org/History/1989/proposal-magnify.gif")
+		downloader.addAllFromCache()
+	})
 }
 
 func TestArrayDummy(t *testing.T){

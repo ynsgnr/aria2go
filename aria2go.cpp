@@ -95,3 +95,23 @@ int arraytest(void* a){
     delete s;
     return current_array_length;
 }
+
+void add_uri(void* a,char* uri){
+    TO_OBJECT(a)
+    object->add_uri(uri);
+}
+
+void clear_uris(void* a){
+    TO_OBJECT(a)
+    object->clear_uris();
+}
+
+void* add_all_from_cache(void* a,int position=-1){
+    TO_OBJECT(a)
+    return object->add_all_from_cache(position);
+}
+
+void* addTorrent_aria2go(void* a,char* file,int position=-1){
+    TO_OBJECT(a)
+    object->addTorrent_libaria2(file,position);
+}

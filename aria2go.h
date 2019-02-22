@@ -20,6 +20,10 @@
         int current_index_size;
         int current_array_length;
         int arraytest(void*);
+        void add_uri(void*,char*);
+        void clear_uris(void*);
+        void* add_all_from_cache(void*,int);
+        void* addTorrent_aria2go(void*,char*,int);
     #ifdef __cplusplus
     }
     #endif

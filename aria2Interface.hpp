@@ -13,7 +13,12 @@ class Aria2Interface {
         void* addUri_libaria2(char*,int);
         void* addMetalink_libaria2(char*,int,int*,int*);
         void* arraytest(int*,int*);
+        void* addTorrent_libaria2(char*,int);
+        void add_uri(char*);
+        void clear_uris();
+        void* add_all_from_cache(int);
     private:
         aria2::Session* session = NULL;
         void clear_session();
+        std::vector<std::string> uris;
 };
