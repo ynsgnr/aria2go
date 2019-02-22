@@ -38,7 +38,7 @@ int run_aria2go(void* a,void* s){
     return object->run_libaria2();
 }
 
-const char* gidToHex_aria2go(void* a,void* gid){
+char* gidToHex_aria2go(void* a,void* gid){
     TO_OBJECT(a)
     return object->gidToHex_libaria2(gid);
 }

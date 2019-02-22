@@ -7,7 +7,7 @@ class Aria2Interface {
         void* init_libaria2_session();
         int run_libaria2();
         void set_session(void*);
-        const char* gidToHex_libaria2(void*);
+        char* gidToHex_libaria2(void*);
         void * hexToGid_libaria2(char* s);
         bool isNull_libaria2(void* g);
         void* addUri_libaria2(char*,int);

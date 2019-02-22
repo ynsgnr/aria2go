@@ -3,8 +3,10 @@
 
 //#include <aria2/aria2.h> - if shared library is present on system
 #include "aria2.h"
-
 #include "aria2Interface.hpp"
+
+#include<string.h>
+#include <iostream>
 
 int Aria2Interface::init_libaria2(){
     aria2::libraryInit();
@@ -36,9 +38,12 @@ int Aria2Interface::run_libaria2(){
     return aria2::run(Aria2Interface::session,aria2::RUN_ONCE);
 }
 
-const char* Aria2Interface::gidToHex_libaria2(void* g){
+char* Aria2Interface::gidToHex_libaria2(void* g){
     TO_GID(g)
-    return aria2::gidToHex(gid).c_str();
+    std::string h = aria2::gidToHex(gid);
+    char hex[h.length()];
+    strcpy(hex,h.c_str());
+    return hex;
 }
 
 void Aria2Interface::clear_session(){
@@ -60,9 +65,13 @@ bool Aria2Interface::isNull_libaria2(void* g){
 void* Aria2Interface::addUri_libaria2(char* uri,int position=-1){
     //TODO implement options
     if(uri==NULL){ throw "Undefined String for adding uri"; }
-    aria2::A2Gid* gid;
-    int is_error = aria2::addUri(session,gid,std::vector<std::string> {std::string (uri)},aria2::KeyVals(),position);
-    if (is_error || gid==NULL) throw "Failed to add download uri";
+    aria2::A2Gid gid;
+    int is_error = aria2::addUri(session,&gid,std::vector<std::string> {std::string (uri)},aria2::KeyVals(),position);
+    if (is_error || aria2::isNull(gid)){
+        std::string error_message = "Failed to add download uri";
+        error_message += std::to_string(is_error);
+        throw error_message;
+    }
     return (void *) gid;    
 }
 
@@ -77,7 +86,7 @@ void* Aria2Interface::addMetalink_libaria2(char* file_location,int position,int*
 
 void* Aria2Interface::arraytest(int* l, int* s){
     std::vector<int>* array;
-    std::vector<int> array_object {1,12,35,16,43,67};
+    std::vector<int> array_object {1,12,35,16,43,69};
     array = &array_object;
     *l = array->size();
     *s = sizeof(int);

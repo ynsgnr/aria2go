@@ -97,3 +97,5 @@ func (d Downloader)arraytest() []int{
 	}
 	return gids
 }
+
+

@@ -18,5 +18,5 @@ esac
 echo "Compiling ${lib_file}"
 g++ -o "${lib_file}" aria2Interface.cpp aria2go.cpp -O3 -Wall -Wextra -fPIC -shared -l aria2 -DBUILD_DLL
 
-go test
+go test -v
 
