@@ -18,7 +18,6 @@ void* new_aria2go(void){
 
 void del_aria2go(void* a){
     TO_OBJECT(a)
-    if(current_array!=NULL) delete current_array;
     delete object;
 }
 
@@ -59,23 +58,24 @@ void* addUri_aria2go(void* a, char* uri, int position=-1){
     return object->addUri_libaria2(uri,position);
 }
 
+void* current_array;
+int current_array_length;
+aria2::A2Gid* current_gid_array;
+int current_gid_array_length;
+
 int addMetalink_aria2go(void* a,char* file_location,int position=-1){
     TO_OBJECT(a)
     int* l = new int();
-    int* s = new int();
-    if(current_array!=NULL) delete current_array; //TODO fix here
-    current_array = object->addMetalink_libaria2(file_location,position,l,s);
-    current_index_size = *s/sizeof(void*);
-    current_array_length = *l;
+    if(current_gid_array!=NULL) delete current_gid_array; //TODO fix here
+    current_gid_array = object->addMetalink_libaria2(file_location,position,l);
+    current_gid_array_length = *l;
     delete l;
-    delete s;
-    return current_array_length;
+    return current_gid_array_length;
 }
 
 void* get_element_gid(int index){
-    if(index>=current_array_length) throw "Out Of Index";
-    aria2::A2Gid* array = (aria2::A2Gid*)current_array;
-    return array+index;
+    if(index>=current_gid_array_length) throw "Out Of Index";
+    return (void*)current_gid_array[index];
 }
 
 int get_element_int_value(int index){
@@ -87,12 +87,9 @@ int get_element_int_value(int index){
 int arraytest(void* a){
     TO_OBJECT(a)
     int* l = new int();
-    int* s = new int();
-    current_array = object->arraytest(l,s);
-    current_index_size = (*s)/sizeof(void*);
+    current_array = object->arraytest(l);
     current_array_length = *l;
     delete l;
-    delete s;
     return current_array_length;
 }
 
@@ -113,5 +110,15 @@ void* add_all_from_cache(void* a,int position=-1){
 
 void* addTorrent_aria2go(void* a,char* file,int position=-1){
     TO_OBJECT(a)
-    object->addTorrent_libaria2(file,position);
+    return object->addTorrent_libaria2(file,position);
+}
+
+int getActiveDownload_aria2go(void* a){
+    TO_OBJECT(a)
+    int* l = new int();    
+    if(current_gid_array!=NULL) delete current_gid_array;
+    current_gid_array = object->getActiveDownload_libaria2(l);
+    current_gid_array_length = *l;
+    delete l;
+    return current_array_length;
 }

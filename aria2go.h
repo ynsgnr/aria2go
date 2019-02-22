@@ -16,14 +16,12 @@
         int addMetalink_aria2go(void*,char*,int);
         void* get_element_gid(int);
         int get_element_int_value(int);
-        void* current_array;
-        int current_index_size;
-        int current_array_length;
         int arraytest(void*);
         void add_uri(void*,char*);
         void clear_uris(void*);
         void* add_all_from_cache(void*,int);
         void* addTorrent_aria2go(void*,char*,int);
+        int getActiveDownload_aria2go(void*);
     #ifdef __cplusplus
     }
     #endif

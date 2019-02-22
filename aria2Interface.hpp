@@ -11,12 +11,13 @@ class Aria2Interface {
         void * hexToGid_libaria2(char* s);
         bool isNull_libaria2(void* g);
         void* addUri_libaria2(char*,int);
-        void* addMetalink_libaria2(char*,int,int*,int*);
-        void* arraytest(int*,int*);
+        aria2::A2Gid* addMetalink_libaria2(char*,int,int*);
+        void* arraytest(int*);
         void* addTorrent_libaria2(char*,int);
         void add_uri(char*);
         void clear_uris();
         void* add_all_from_cache(int);
+        aria2::A2Gid* getActiveDownload_libaria2(int*);
     private:
         aria2::Session* session = NULL;
         void clear_session();

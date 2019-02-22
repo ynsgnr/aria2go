@@ -56,6 +56,9 @@ func TestAll(t *testing.T){
 		downloader.addUriToCache("https://www.w3.org/History/1989/proposal-magnify.gif")
 		downloader.addAllFromCache()
 	})
+	t.Run("Get Active Download",func(t *testing.T){
+		downloader.getActiveDownload()
+	})
 }
 
 func TestArrayDummy(t *testing.T){

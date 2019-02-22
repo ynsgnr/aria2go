@@ -117,4 +117,13 @@ func (d Downloader)addAllFromCache() Gid{
 	return ret
 }
 
-
+func (d Downloader)getActiveDownload() []Gid{
+	var gids []Gid
+	l :=int(C.getActiveDownload_aria2go(d.ptr))
+	for i := 0; i < l; i++ {
+		var g Gid
+		g.ptr = C.get_element_gid(C.int(i))
+		gids = append(gids, g)
+	}
+	return gids
+}
