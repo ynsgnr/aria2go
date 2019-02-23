@@ -1,10 +1,11 @@
 
-#define TO_OBJECT(a) 
 #define TO_GID(gid_to_convert) aria2::A2Gid gid = (aria2::A2Gid) gid_to_convert;
 
 #include "aria2go.h"
 #include "aria2.h"
 #include <string.h>
+
+#include <iostream>
 
 // C wrapper for go
 
@@ -12,28 +13,22 @@
 //Each Downloader object must be cast to DownloaderLib pointer
 //Pointers must be DownloaderLib
 
-aria2::A2Gid* current_gid_array;
+aria2::A2Gid* current_gid_array = NULL;
 int current_gid_array_length;
 aria2::Session* session = NULL;
 std::vector<std::string> uris;
 
-void* new_aria2go(void){
-    return NULL;
-}
-
-void del_aria2go(void* a){
-}
 
 int downloadEventCallback(aria2::Session* s, aria2::DownloadEvent e,
                           aria2::A2Gid gid, void* userData){
     return 0;
 }
 
-void init_aria2go(void* a){
+void init_aria2go(){
     aria2::libraryInit();
 }
 
-void* init_aria2go_session (void* a){
+void* init_aria2go_session (){
     aria2::SessionConfig config;
     config.downloadEventCallback = downloadEventCallback;
     aria2::Session* s = aria2::sessionNew(aria2::KeyVals(),config);
@@ -41,12 +36,12 @@ void* init_aria2go_session (void* a){
     return (void *)s;
 }
 
-int run_aria2go(void* a,void* s){
+int run_aria2go(void* s){
     session = (aria2::Session*)s;
     return aria2::run(session,aria2::RUN_ONCE);
 }
 
-char* gidToHex_aria2go(void* a,void* g){
+char* gidToHex_aria2go(void* g){
     TO_GID(g)
     std::string h = aria2::gidToHex(gid);
     char* hex = new char(h.length());
@@ -54,16 +49,16 @@ char* gidToHex_aria2go(void* a,void* g){
     return hex;
 }
 
-void* hexToGid_aria2go(void* a,char * s){
+void* hexToGid_aria2go(char * s){
     if(s==NULL){ throw "Undefined String for Hex To Gid transform"; }
     return (void *) aria2::hexToGid(std::string (s));
 }
 
-int isNull_aria2go(void* a, void* g){
+int isNull_aria2go( void* g){
     return aria2::isNull( (aria2::A2Gid) g);
 }
 
-void* addUri_aria2go(void* a, char* uri, int position=-1){
+void* addUri_aria2go( char* uri, int position=-1){
     //TODO implement options
     if(uri==NULL){ throw "Undefined String for adding uri"; }
     uris.push_back(std::string (uri));
@@ -78,17 +73,13 @@ void* addUri_aria2go(void* a, char* uri, int position=-1){
     return (void *) gid;    
 }
 
-int addMetalink_aria2go(void* a,char* file_location,int position=-1){
-    TO_OBJECT(a)
-    int* l = new int();
-    if(current_gid_array!=NULL) delete current_gid_array; //TODO fix here
+int addMetalink_aria2go(char* file_location,int position=-1){
+    if(current_gid_array!=NULL) delete current_gid_array;
     std::vector<aria2::A2Gid>* gids;
     int is_error = aria2::addMetalink(session,gids,std::string (file_location),aria2::KeyVals(),position);
     if(is_error || gids==NULL) throw "Unable to add metalink";
-    *l = gids->size();
+    current_gid_array_length = gids->size();
     current_gid_array = gids->data();
-    current_gid_array_length = *l;
-    delete l;
     return current_gid_array_length;
 }
 
@@ -97,7 +88,7 @@ void* get_element_gid(int index){
     return (void*)current_gid_array[index];
 }
 
-void add_uri(void* a,char* uri){
+void add_uri(char* uri){
     uris.push_back(std::string (uri));   
 }
 
@@ -105,7 +96,7 @@ void clear_uris(){
     uris.clear();
 }
 
-void* add_all_from_cache(void* a,int position=-1){
+void* add_all_from_cache(int position=-1){
     //TODO implement options
     aria2::A2Gid gid;
     int is_error = aria2::addUri(session,&gid,uris,aria2::KeyVals(),position);
@@ -118,7 +109,7 @@ void* add_all_from_cache(void* a,int position=-1){
     return (void *) gid;    
 }
 
-void* addTorrent_aria2go(void* a,char* file,int position=-1){
+void* addTorrent_aria2go(char* file,int position=-1){
     aria2::A2Gid gid;
     int is_error;
     if(uris.size()>0){
@@ -135,13 +126,13 @@ void* addTorrent_aria2go(void* a,char* file,int position=-1){
     return (void *) gid;
 }
 
-int getActiveDownload_aria2go(void* a){
-    int* l = new int();    
+int getActiveDownload_aria2go(){
+    std::cout << "Test\n";
     if(current_gid_array!=NULL) delete current_gid_array;
+    std::cout << "Test\n";
     std::vector<aria2::A2Gid> gids = aria2::getActiveDownload(session);
-    *l = gids.size();
+    current_gid_array_length = gids.size();
     current_gid_array = gids.data();
-    current_gid_array_length = *l;
-    delete l;
+    std::cout << "Test\n";
     return current_gid_array_length;
 }
