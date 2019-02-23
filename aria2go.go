@@ -96,3 +96,13 @@ func (d aria2go)getActiveDownload() []Gid{
 	}
 	return gids
 }
+
+func (d aria2go)removeDownload(g Gid){
+	C.removeDownload_aria2go(g.ptr,C.int(0)) //Second variable is bool for forcing
+}
+
+func (d aria2go)forceRemoveDownload(g Gid){
+	C.removeDownload_aria2go(g.ptr,C.int(1))
+}
+
+

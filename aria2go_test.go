@@ -49,4 +49,11 @@ func TestAll(t *testing.T){
 	t.Run("Get Active Download",func(t *testing.T){
 		downloader.getActiveDownload()
 	})
+	t.Run("Remove Download",func(t *testing.T){
+		downloader.removeDownload(gid)
+		//TODO check events
+	})
+	t.Run("Remove Download Force",func(t *testing.T){
+		downloader.forceRemoveDownload(gid)
+	})
 }

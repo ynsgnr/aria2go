@@ -1,5 +1,6 @@
 
 #define TO_GID(gid_to_convert) aria2::A2Gid gid = (aria2::A2Gid) gid_to_convert;
+#define ERROR_MESSAGE(message,code) {std::string error_message = message; error_message += std::to_string(code); throw error_message;}
 
 #include "aria2go.h"
 #include "aria2.h"
@@ -63,12 +64,8 @@ void* addUri_aria2go( char* uri, int position=-1){
     if(uri==NULL){ throw "Undefined String for adding uri"; }
     uris.push_back(std::string (uri));
     aria2::A2Gid gid;
-    int is_error = aria2::addUri(session,&gid,uris,aria2::KeyVals(),position);
-    if (is_error || aria2::isNull(gid)){
-        std::string error_message = "Failed to add download uri";
-        error_message += std::to_string(is_error);
-        throw error_message;
-    }
+    int error_code = aria2::addUri(session,&gid,uris,aria2::KeyVals(),position);
+    if (error_code || aria2::isNull(gid)) ERROR_MESSAGE("Failed to add download uri",error_code)
     clear_uris();
     return (void *) gid;    
 }
@@ -76,8 +73,8 @@ void* addUri_aria2go( char* uri, int position=-1){
 int addMetalink_aria2go(char* file_location,int position=-1){
     if(current_gid_array!=NULL) delete current_gid_array;
     std::vector<aria2::A2Gid>* gids;
-    int is_error = aria2::addMetalink(session,gids,std::string (file_location),aria2::KeyVals(),position);
-    if(is_error || gids==NULL) throw "Unable to add metalink";
+    int error_code = aria2::addMetalink(session,gids,std::string (file_location),aria2::KeyVals(),position);
+    if(error_code || gids==NULL) ERROR_MESSAGE("Unable to add metalink",error_code)
     current_gid_array_length = gids->size();
     current_gid_array = gids->data();
     return current_gid_array_length;
@@ -99,40 +96,36 @@ void clear_uris(){
 void* add_all_from_cache(int position=-1){
     //TODO implement options
     aria2::A2Gid gid;
-    int is_error = aria2::addUri(session,&gid,uris,aria2::KeyVals(),position);
-    if (is_error || aria2::isNull(gid)){
-        std::string error_message = "Failed to add download uri";
-        error_message += std::to_string(is_error);
-        throw error_message;
-    }
+    int error_code = aria2::addUri(session,&gid,uris,aria2::KeyVals(),position);
+    if (error_code || aria2::isNull(gid)) ERROR_MESSAGE("Failed to add download uri",error_code)
     clear_uris();
     return (void *) gid;    
 }
 
 void* addTorrent_aria2go(char* file,int position=-1){
     aria2::A2Gid gid;
-    int is_error;
+    int error_code;
     if(uris.size()>0){
-        is_error = aria2::addTorrent(session,&gid,std::string (file),uris,aria2::KeyVals(),position);
+        error_code = aria2::addTorrent(session,&gid,std::string (file),uris,aria2::KeyVals(),position);
     }else{
-        is_error = aria2::addTorrent(session,&gid,std::string (file),aria2::KeyVals(),position);
+        error_code = aria2::addTorrent(session,&gid,std::string (file),aria2::KeyVals(),position);
     }
-    if (is_error || aria2::isNull(gid)){
-        std::string error_message = "Failed to add download uri";
-        error_message += std::to_string(is_error);
-        throw error_message;
-    }
+    if (error_code || aria2::isNull(gid)) ERROR_MESSAGE("Failed to add download uri",error_code)
     clear_uris();
     return (void *) gid;
 }
 
 int getActiveDownload_aria2go(){
-    std::cout << "Test\n";
     if(current_gid_array!=NULL) delete current_gid_array;
-    std::cout << "Test\n";
     std::vector<aria2::A2Gid> gids = aria2::getActiveDownload(session);
     current_gid_array_length = gids.size();
     current_gid_array = gids.data();
-    std::cout << "Test\n";
     return current_gid_array_length;
+}
+
+void removeDownload_aria2go(void* g, int force){
+    int error_code = aria2::removeDownload(session,*(aria2::A2Gid*)g,force);
+    if(error_code)
+        if(force) ERROR_MESSAGE("Failed to force remove download",error_code)
+        else ERROR_MESSAGE("Failed to remove download",error_code)
 }

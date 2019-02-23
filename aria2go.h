@@ -13,12 +13,12 @@
         void* addUri_aria2go(char*,int);
         int addMetalink_aria2go(char*,int);
         void* get_element_gid(int);
-        int get_element_int_value(int);
         void add_uri(char*);
         void clear_uris();
         void* add_all_from_cache(int);
         void* addTorrent_aria2go(char*,int);
         int getActiveDownload_aria2go();
+        void removeDownload_aria2go(void*, int);
     #ifdef __cplusplus
     }
     #endif
