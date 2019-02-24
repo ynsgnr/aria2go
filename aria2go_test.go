@@ -4,6 +4,8 @@ import "testing"
 import "gotest.tools/assert"
 import "os"
 
+import "fmt"
+
 var downloader aria2go
 var gid Gid
 var gid_position Gid

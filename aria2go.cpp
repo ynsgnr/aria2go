@@ -1,7 +1,6 @@
 
 #define TO_GID(gid_to_convert) aria2::A2Gid gid = (aria2::A2Gid) gid_to_convert;
 #define ERROR_MESSAGE(message,code) {std::string error_message = message; error_message += std::to_string(code); throw error_message;}
-
 #include "aria2go.h"
 #include "aria2.h"
 #include <string.h>
@@ -33,11 +32,12 @@ void* init_aria2go_session (){
     aria2::SessionConfig config;
     config.downloadEventCallback = downloadEventCallback;
     aria2::Session* s = aria2::sessionNew(aria2::KeyVals(),config);
-    if(s==NULL){ throw "Unable to create session"; }
+    if(s==NULL){ return nullptr; }
     return (void *)s;
 }
 
 int run_aria2go(void* s){
+    if(s == nullptr) return -1;
     session = (aria2::Session*)s;
     return aria2::run(session,aria2::RUN_ONCE);
 }
@@ -51,7 +51,7 @@ char* gidToHex_aria2go(void* g){
 }
 
 void* hexToGid_aria2go(char * s){
-    if(s==NULL){ throw "Undefined String for Hex To Gid transform"; }
+    if(s==nullptr){ return nullptr; /* Undefined String for Hex To Gid transform */ }
     return (void *) aria2::hexToGid(std::string (s));
 }
 
@@ -61,7 +61,7 @@ int isNull_aria2go( void* g){
 
 void* addUri_aria2go( char* uri, int position=-1){
     //TODO implement options
-    if(uri==NULL){ throw "Undefined String for adding uri"; }
+    if(uri==nullptr){ return nullptr; /*throw "Undefined String for adding uri";*/}
     uris.push_back(std::string (uri));
     aria2::A2Gid gid;
     int error_code = aria2::addUri(session,&gid,uris,aria2::KeyVals(),position);
@@ -123,9 +123,10 @@ int getActiveDownload_aria2go(){
     return current_gid_array_length;
 }
 
-void removeDownload_aria2go(void* g, int force){
-    int error_code = aria2::removeDownload(session,*(aria2::A2Gid*)g,force);
-    if(error_code)
-        if(force) ERROR_MESSAGE("Failed to force remove download",error_code)
-        else ERROR_MESSAGE("Failed to remove download",error_code)
+int removeDownload_aria2go(void* g, int force){
+    if(g==nullptr) return -1;
+    TO_GID(g)
+    if(aria2::isNull(gid)) return -1;
+    int error_code = aria2::removeDownload(session,gid,force);
+    return error_code;
 }
