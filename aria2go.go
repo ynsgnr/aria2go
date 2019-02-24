@@ -107,3 +107,5 @@ func (d aria2go)forceRemoveDownload(g Gid) {
 }
 
 
+
+
