@@ -19,6 +19,8 @@
         void* addTorrent_aria2go(char*,int);
         int getActiveDownload_aria2go();
         int removeDownload_aria2go(void*, int);
+        int pauseDownload_aria2go(void*, int);
+        int unpauseDownload_aria2go(void*);
     #ifdef __cplusplus
     }
     #endif

@@ -130,3 +130,20 @@ int removeDownload_aria2go(void* g, int force){
     int error_code = aria2::removeDownload(session,gid,force);
     return error_code;
 }
+
+int pauseDownload_aria2go(void* g, int force){
+    if(g==nullptr) return -1;
+    TO_GID(g)
+    if(aria2::isNull(gid)) return -1;
+    int error_code = aria2::pauseDownload(session,gid,force);
+    return error_code;
+}
+
+int unpauseDownload_aria2go(void* g){
+    if(g==nullptr) return -1;
+    TO_GID(g)
+    if(aria2::isNull(gid)) return -1;
+    int error_code = aria2::unpauseDownload(session,gid);
+    return error_code;
+}
+

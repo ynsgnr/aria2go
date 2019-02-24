@@ -97,13 +97,26 @@ func (d aria2go)getActiveDownload() []Gid{
 	return gids
 }
 
-func (d aria2go)removeDownload(g Gid) error {
+func (d aria2go)removeDownload(g Gid) {
 	C.removeDownload_aria2go(g.ptr,C.int(0)) 
 	//Second variable is bool for forcing
 }
 
 func (d aria2go)forceRemoveDownload(g Gid) {
 	C.removeDownload_aria2go(g.ptr,C.int(1))
+}
+
+func (d aria2go)pauseDownload(g Gid) {
+	C.pauseDownload_aria2go(g.ptr,C.int(0)) 
+	//Second variable is bool for forcing
+}
+
+func (d aria2go)forcePauseDownload(g Gid) {
+	C.pauseDownload_aria2go(g.ptr,C.int(1))
+}
+
+func (d aria2go)unpauseDownload(g Gid) {
+	C.unpauseDownload_aria2go(g.ptr)
 }
 
 
