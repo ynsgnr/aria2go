@@ -11,6 +11,13 @@ var gid Gid
 var gid_position Gid
 var gid_to_pause Gid
 
+var start_count = 0
+var pause_coount = 0
+var stop_count = 0
+var complete_count = 0
+var BT_complete_count = 0
+var error_count = 0
+
 func TestMain(m *testing.M){
 	downloader = New()
 	downloader.setEventCallback(func(event DownloadEvent,g Gid){
@@ -18,19 +25,24 @@ func TestMain(m *testing.M){
 		switch event {
 		case EVENT_ON_DOWNLOAD_START:
 			fmt.Printf("Download Start\n")
+			start_count++
 		case EVENT_ON_DOWNLOAD_PAUSE:
 			fmt.Printf("Download Pause\n")
+			pause_coount++
 		case EVENT_ON_DOWNLOAD_STOP:
 			fmt.Printf("Download Stop\n")
+			stop_count++
 		case EVENT_ON_DOWNLOAD_COMPLETE:
 			fmt.Printf("Download Complete\n")
+			complete_count++
 		case EVENT_ON_BT_DOWNLOAD_COMPLETE:
 			fmt.Printf("Download BT Complete\n")
+			BT_complete_count++
 		default:
 			fmt.Printf("Download Error\n")
+			error_count++
 		}
 		})
-	downloader.keepRunning()
 	ret := m.Run()
 	downloader.finalize()
 	os.Exit(ret)
@@ -44,7 +56,7 @@ func TestAll(t *testing.T){
 	t.Run("Check Download Status",func(t *testing.T){
 		h:=downloader.getDownloadHandle(gid)
 		s:=h.getStatus()
-		fmt.Printf("Download Status: %s\n",s)
+		assert.Equal(t,s,"waiting")
 	})
 	t.Run("Add uri in position",func(t *testing.T){
 		//Todo maybe check files md5 with argon2
@@ -62,6 +74,23 @@ func TestAll(t *testing.T){
 		hex := downloader.gidToHex(gid)
 		gid_converted := downloader.hexToGid(hex)
 		assert.Equal(t,gid,gid_converted)
+	})
+	t.Run("Check Status in position",func(t *testing.T){
+		hp:=downloader.getDownloadHandle(gid_position)
+		sp:=hp.getStatus()
+		assert.Equal(t,sp,"waiting")
+	})
+	t.Run("Check Run Untill Finished",func(t* testing.T){
+		hp:=downloader.getDownloadHandle(gid_position)
+		sp:=hp.getStatus()
+		assert.Equal(t,sp,"finished")
+		h:=downloader.getDownloadHandle(gid_position)
+		s:=h.getStatus()
+		assert.Equal(t,s,"finished")
+	})
+	t.Run("Check Event Counts",func(t* testing.T){
+		assert.Equal(t,start_count,2)
+		assert.Equal(t,complete_count,2)
 	})
 	t.Run("Uri Cache",func(t *testing.T){
 		downloader.addUriToCache("Test")
