@@ -14,20 +14,20 @@ var gid_to_pause Gid
 func TestMain(m *testing.M){
 	downloader = New()
 	downloader.setEventCallback(func(event DownloadEvent,g Gid){
-		fmt.Printf("Callaback Called")
+		fmt.Printf("Callaback Called:\n")
 		switch event {
 		case EVENT_ON_DOWNLOAD_START:
-			fmt.Printf("Download Start")
+			fmt.Printf("Download Start\n")
 		case EVENT_ON_DOWNLOAD_PAUSE:
-			fmt.Printf("Download Pause")
+			fmt.Printf("Download Pause\n")
 		case EVENT_ON_DOWNLOAD_STOP:
-			fmt.Printf("Download Stop")
+			fmt.Printf("Download Stop\n")
 		case EVENT_ON_DOWNLOAD_COMPLETE:
-			fmt.Printf("Download Complete")
+			fmt.Printf("Download Complete\n")
 		case EVENT_ON_BT_DOWNLOAD_COMPLETE:
-			fmt.Printf("Download BT Complete")
+			fmt.Printf("Download BT Complete\n")
 		default:
-			fmt.Printf("Download Error")
+			fmt.Printf("Download Error\n")
 		}
 		})
 	downloader.keepRunning()

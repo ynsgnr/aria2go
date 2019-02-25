@@ -65,7 +65,12 @@ func (d aria2go)run() int{
 func (d aria2go)keepRunning(){
 	C.finalize_aria2go()
 	d.session = C.init_aria2go_session(C.int(1))
-	C.run_aria2go(d.session,C.int(1))
+	go func(){
+		r:=1
+		for r == 1{
+			r = int(C.run_aria2go(d.session,C.int(1)))
+		}
+	}()
 }
 
 func (d aria2go)runOnce() int{
