@@ -13,7 +13,26 @@ var gid_to_pause Gid
 
 func TestMain(m *testing.M){
 	downloader = New()
-	os.Exit(m.Run())
+	downloader.setEventCallback(func(event DownloadEvent,g Gid){
+		fmt.Printf("Callaback Called")
+		switch event {
+		case EVENT_ON_DOWNLOAD_START:
+			fmt.Printf("Download Start")
+		case EVENT_ON_DOWNLOAD_PAUSE:
+			fmt.Printf("Download Pause")
+		case EVENT_ON_DOWNLOAD_STOP:
+			fmt.Printf("Download Stop")
+		case EVENT_ON_DOWNLOAD_COMPLETE:
+			fmt.Printf("Download Complete")
+		case EVENT_ON_BT_DOWNLOAD_COMPLETE:
+			fmt.Printf("Download BT Complete")
+		default:
+			fmt.Printf("Download Error")
+		}
+		})
+	ret := m.Run()
+	downloader.finalize()
+	os.Exit(ret)
 }
 
 func TestAll(t *testing.T){
@@ -72,15 +91,5 @@ func TestAll(t *testing.T){
 	})
 	t.Run("Unpause Force Paused Download",func(t *testing.T){
 		downloader.unpauseDownload(gid_to_pause)
-	})
-}
-
-func TestCallback(t *testing.T){
-	downloader.setEventCallback(func(event DownloadEvent,g Gid){
-	switch event {
-	case EVENT_ON_DOWNLOAD_START:
-		fmt.Printf("Download Start")
-	}
-		fmt.Printf("Test Calback")
 	})
 }

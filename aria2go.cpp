@@ -165,4 +165,8 @@ int unpauseDownload_aria2go(void* g){
     return error_code;
 }
 
-
+int finalize_aria2go(){
+    int r = aria2::sessionFinal(session);
+    aria2::libraryDeinit();
+    return r;
+}

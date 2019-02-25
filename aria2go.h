@@ -33,7 +33,8 @@
             EVENT_ON_BT_DOWNLOAD_COMPLETE = 5
         };
         extern void runGoCallBack(enum DownloadEvent,void*);
-    
+
+        int finalize_aria2go();
     #ifdef __cplusplus
     }
     #endif

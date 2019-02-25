@@ -144,3 +144,7 @@ func runGoCallBack(event C.enum_DownloadEvent, g unsafe.Pointer){
 	gid.ptr = g
 	callback(DownloadEvent(DownloadEvent(event)),gid)
 }
+
+func (d aria2go)finalize(){
+	C.finalize_aria2go()
+}
