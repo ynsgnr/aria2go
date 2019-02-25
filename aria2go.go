@@ -56,6 +56,16 @@ func New() (aria2go) {
 	return ret
 }
 
+func (d aria2go)runUntillFinished(){
+	//Returns when all downloads finisged
+	C.finalize_aria2go()
+	d.session = C.init_aria2go_session(C.int(0))
+	r:=1
+	for r == 1{
+		r = int(C.run_aria2go(d.session,C.int(1)))
+	}
+}
+
 func (d aria2go)run() int{
 	C.finalize_aria2go()
 	d.session = C.init_aria2go_session(C.int(0))
