@@ -85,13 +85,13 @@ int isNull_aria2go( void* g){
 
 void* addUri_aria2go( char* uri, int position=-1){
     //TODO implement options
-    if(uri==nullptr){ return nullptr; /*throw "Undefined String for adding uri";*/}
+    if(uri==nullptr || !session){ return nullptr; /*throw "Undefined String for adding uri";*/}
     uris.push_back(std::string (uri));
     aria2::A2Gid gid;
     int error_code = aria2::addUri(session,&gid,uris,aria2::KeyVals(),position);
     if (error_code || aria2::isNull(gid)) ERROR_MESSAGE("Failed to add download uri",error_code)
     clear_uris();
-    return (void *) gid;    
+    return (void *) gid;
 }
 
 int addMetalink_aria2go(char* file_location,int position=-1){
@@ -120,6 +120,7 @@ void clear_uris(){
 void* add_all_from_cache(int position=-1){
     //TODO implement options
     aria2::A2Gid gid;
+    if(!session) return nullptr;
     int error_code = aria2::addUri(session,&gid,uris,aria2::KeyVals(),position);
     if (error_code || aria2::isNull(gid)) ERROR_MESSAGE("Failed to add download uri",error_code)
     clear_uris();
@@ -129,6 +130,7 @@ void* add_all_from_cache(int position=-1){
 void* addTorrent_aria2go(char* file,int position=-1){
     aria2::A2Gid gid;
     int error_code;
+    if(!session) return nullptr;
     if(uris.size()>0){
         error_code = aria2::addTorrent(session,&gid,std::string (file),uris,aria2::KeyVals(),position);
     }else{
@@ -141,6 +143,7 @@ void* addTorrent_aria2go(char* file,int position=-1){
 
 int getActiveDownload_aria2go(){
     if(current_gid_array!=NULL) delete current_gid_array;
+    if(!session) return -1;
     std::vector<aria2::A2Gid> gids = aria2::getActiveDownload(session);
     current_gid_array_length = gids.size();
     current_gid_array = gids.data();
@@ -156,7 +159,7 @@ int removeDownload_aria2go(void* g, int force){
 }
 
 int pauseDownload_aria2go(void* g, int force){
-    if(g==nullptr) return -1;
+    if(g==nullptr || !session) return -1;
     TO_GID(g)
     if(aria2::isNull(gid)) return -1;
     int error_code = aria2::pauseDownload(session,gid,force);
@@ -164,7 +167,7 @@ int pauseDownload_aria2go(void* g, int force){
 }
 
 int unpauseDownload_aria2go(void* g){
-    if(g==nullptr) return -1;
+    if(g==nullptr || !session) return -1;
     TO_GID(g)
     if(aria2::isNull(gid)) return -1;
     int error_code = aria2::unpauseDownload(session,gid);
@@ -185,12 +188,15 @@ int deinit_aria2go(){
 }
 
 void* getDownloadHandle_aria2go(void* g){
+    if(!g) return nullptr;
     TO_GID(g)
+    if (aria2::isNull(gid)) return nullptr;
     aria2::DownloadHandle* h = aria2::getDownloadHandle(session,gid);
     return (void*) h;
 }
 
 enum DownloadStatus getStatus_downloadHandle(void* h){
+    if(!h) return DOWNLOAD_ERROR;
     TO_HANDLE_POINTER(h)
     aria2::DownloadStatus s = handle->getStatus();
     switch (s) {
