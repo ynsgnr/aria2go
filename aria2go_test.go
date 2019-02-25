@@ -30,6 +30,7 @@ func TestMain(m *testing.M){
 			fmt.Printf("Download Error")
 		}
 		})
+	downloader.keepRunning()
 	ret := m.Run()
 	downloader.finalize()
 	os.Exit(ret)
@@ -39,6 +40,11 @@ func TestAll(t *testing.T){
 	t.Run("Add uri",func(t *testing.T){
 		//Todo maybe check files md5 with argon2
 		gid = downloader.addUri("https://www.w3.org/History/1989/Image1.gif") //oldest file in the internet, unlikely to be deleted
+	})
+	t.Run("Check Download Status",func(t *testing.T){
+		h:=downloader.getDownloadHandle(gid)
+		s:=h.getStatus()
+		fmt.Printf("Download Status: %s\n",s)
 	})
 	t.Run("Add uri in position",func(t *testing.T){
 		//Todo maybe check files md5 with argon2

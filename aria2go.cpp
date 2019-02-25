@@ -1,5 +1,6 @@
 
 #define TO_GID(gid_to_convert) aria2::A2Gid gid = (aria2::A2Gid) gid_to_convert;
+#define TO_HANDLE_POINTER(handle_to_convert) aria2::DownloadHandle* handle = (aria2::DownloadHandle*) handle_to_convert;
 #define ERROR_MESSAGE(message,code) {std::string error_message = message; error_message += std::to_string(code); throw error_message;}
 
 #include "aria2go.h"
@@ -46,18 +47,23 @@ void init_aria2go(){
     aria2::libraryInit();
 }
 
-void* init_aria2go_session (){
+void* init_aria2go_session (int keep_running){
     aria2::SessionConfig config;
     config.downloadEventCallback = downloadEventCallback;
+    config.keepRunning = keep_running;
     aria2::Session* s = aria2::sessionNew(aria2::KeyVals(),config);
     if(s==NULL){ return nullptr; }
     return (void *)s;
 }
 
-int run_aria2go(void* s){
+int run_aria2go(void* s, int run_mode){
     if(s == nullptr) return -1;
     session = (aria2::Session*)s;
-    return aria2::run(session,aria2::RUN_ONCE);
+    if(run_mode){
+        return aria2::run(session,aria2::RUN_ONCE);
+    }else{
+        return aria2::run(session,aria2::RUN_DEFAULT);
+    }
 }
 
 char* gidToHex_aria2go(void* g){
@@ -166,7 +172,39 @@ int unpauseDownload_aria2go(void* g){
 }
 
 int finalize_aria2go(){
-    int r = aria2::sessionFinal(session);
-    aria2::libraryDeinit();
-    return r;
+    if(session){
+        aria2::shutdown(session);
+        int r = aria2::sessionFinal(session);
+        return r;
+    }
+    return -1;
+}
+
+int deinit_aria2go(){
+    return aria2::libraryDeinit();
+}
+
+void* getDownloadHandle_aria2go(void* g){
+    TO_GID(g)
+    aria2::DownloadHandle* h = aria2::getDownloadHandle(session,gid);
+    return (void*) h;
+}
+
+enum DownloadStatus getStatus_downloadHandle(void* h){
+    TO_HANDLE_POINTER(h)
+    aria2::DownloadStatus s = handle->getStatus();
+    switch (s) {
+        case aria2::DOWNLOAD_ACTIVE:
+            return DOWNLOAD_ACTIVE;
+        case aria2::DOWNLOAD_WAITING:
+            return DOWNLOAD_WAITING;
+        case aria2::DOWNLOAD_PAUSED:
+            return DOWNLOAD_PAUSED;
+        case aria2::DOWNLOAD_COMPLETE:
+            return DOWNLOAD_COMPLETE;
+        case aria2::DOWNLOAD_REMOVED:
+            return DOWNLOAD_REMOVED;
+        default:
+            return DOWNLOAD_ERROR;
+    }
 }

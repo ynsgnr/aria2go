@@ -7,8 +7,8 @@
     extern "C" {
     #endif
         void init_aria2go();
-        void* init_aria2go_session ();
-        int run_aria2go(void*);
+        void* init_aria2go_session(int);
+        int run_aria2go(void*,int);
         char* gidToHex_aria2go(void*);
         void* hexToGid_aria2go(char*);
         int isNull_aria2go(void*);
@@ -23,6 +23,7 @@
         int removeDownload_aria2go(void*, int);
         int pauseDownload_aria2go(void*, int);
         int unpauseDownload_aria2go(void*);
+
          // callback functions:
         enum DownloadEvent {
             EVENT_ON_DOWNLOAD_START = 0,
@@ -34,7 +35,20 @@
         };
         extern void runGoCallBack(enum DownloadEvent,void*);
 
+        //Download handle functions
+        enum DownloadStatus{
+            DOWNLOAD_ACTIVE = 0,
+            DOWNLOAD_WAITING = 1,
+            DOWNLOAD_PAUSED = 2,
+            DOWNLOAD_COMPLETE = 3,
+            DOWNLOAD_ERROR = 4,
+            DOWNLOAD_REMOVED = 5
+        };
+        void* getDownloadHandle_aria2go(void*);
+        enum DownloadStatus getStatus_downloadHandle(void*);
+
         int finalize_aria2go();
+        int deinit_aria2go();
     #ifdef __cplusplus
     }
     #endif

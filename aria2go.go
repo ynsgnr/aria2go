@@ -17,6 +17,27 @@ const(
 	EVENT_ON_BT_DOWNLOAD_COMPLETE DownloadEvent = C.EVENT_ON_BT_DOWNLOAD_COMPLETE
 )
 
+//ENUMS
+type DownloadStatus int
+const(
+	DOWNLOAD_ACTIVE	DownloadStatus = C.DOWNLOAD_ACTIVE
+	DOWNLOAD_WAITING DownloadStatus = C.DOWNLOAD_WAITING
+    DOWNLOAD_PAUSED DownloadStatus = C.DOWNLOAD_PAUSED
+    DOWNLOAD_COMPLETE DownloadStatus = C.DOWNLOAD_COMPLETE
+    DOWNLOAD_ERROR DownloadStatus = C.DOWNLOAD_ERROR
+	DOWNLOAD_REMOVED DownloadStatus = C.DOWNLOAD_REMOVED
+)
+func (ds DownloadStatus) String() string {
+	names := [...]string{
+		"active",
+		"waiting",
+		"paused",
+		"completed",
+		"has an error",
+		"removed"}
+	return names[ds]
+}
+
 type aria2go struct {
 	session unsafe.Pointer
 }
@@ -25,12 +46,32 @@ type Gid struct {
 	ptr unsafe.Pointer
 }
 
+type DownloadHandle struct {
+	ptr unsafe.Pointer
+}
+
 func New() (aria2go) {
 	var ret aria2go
 	C.init_aria2go()
-	ret.session = C.init_aria2go_session()
-	C.run_aria2go(ret.session)
 	return ret
+}
+
+func (d aria2go)run() int{
+	C.finalize_aria2go()
+	d.session = C.init_aria2go_session(C.int(0))
+	return int(C.run_aria2go(d.session,C.int(0)))
+}
+
+func (d aria2go)keepRunning(){
+	C.finalize_aria2go()
+	d.session = C.init_aria2go_session(C.int(1))
+	C.run_aria2go(d.session,C.int(1))
+}
+
+func (d aria2go)runOnce() int{
+	C.finalize_aria2go()
+	d.session = C.init_aria2go_session(C.int(0))
+	return int(C.run_aria2go(d.session,C.int(1)))
 }
 
 func (d aria2go)gidToHex(gid Gid) string{
@@ -142,9 +183,21 @@ func (d aria2go)setEventCallback( eventCallback EventCallback){
 func runGoCallBack(event C.enum_DownloadEvent, g unsafe.Pointer){
 	var gid Gid
 	gid.ptr = g
-	callback(DownloadEvent(DownloadEvent(event)),gid)
+	callback(DownloadEvent(event),gid)
 }
 
 func (d aria2go)finalize(){
 	C.finalize_aria2go()
+	C.deinit_aria2go()
 }
+
+func (d aria2go)getDownloadHandle(g Gid) DownloadHandle{
+	var handle DownloadHandle
+	handle.ptr = C.getDownloadHandle_aria2go(g.ptr)
+	return handle
+}
+
+func (h DownloadHandle)getStatus() DownloadStatus{
+	return DownloadStatus(C.getStatus_downloadHandle(h.ptr))
+}
+
