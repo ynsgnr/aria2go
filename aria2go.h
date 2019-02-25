@@ -23,11 +23,17 @@
         int removeDownload_aria2go(void*, int);
         int pauseDownload_aria2go(void*, int);
         int unpauseDownload_aria2go(void*);
-        
-         // callback function
-        void callCallback();
-        
-        extern void runCallBack();
+         // callback functions:
+        enum DownloadEvent {
+            EVENT_ON_DOWNLOAD_START = 0,
+            EVENT_ON_DOWNLOAD_PAUSE = 1,
+            EVENT_ON_DOWNLOAD_STOP = 2,
+            EVENT_ON_DOWNLOAD_COMPLETE = 3,
+            EVENT_ON_DOWNLOAD_ERROR = 4,
+            EVENT_ON_BT_DOWNLOAD_COMPLETE = 5
+        };
+        extern void runGoCallBack(enum DownloadEvent,void*);
+    
     #ifdef __cplusplus
     }
     #endif

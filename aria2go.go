@@ -9,12 +9,12 @@ import "unsafe"
 //ENUMS
 type DownloadEvent int
 const(
-	EVENT_ON_DOWNLOAD_START	DownloadEvent = 0
-	EVENT_ON_DOWNLOAD_PAUSE DownloadEvent = 1
-    EVENT_ON_DOWNLOAD_STOP DownloadEvent = 2
-    EVENT_ON_DOWNLOAD_COMPLETE DownloadEvent = 3
-    EVENT_ON_DOWNLOAD_ERROR DownloadEvent = 4
-	EVENT_ON_BT_DOWNLOAD_COMPLETE DownloadEvent = 5
+	EVENT_ON_DOWNLOAD_START	DownloadEvent = C.EVENT_ON_DOWNLOAD_START
+	EVENT_ON_DOWNLOAD_PAUSE DownloadEvent = C.EVENT_ON_DOWNLOAD_PAUSE
+    EVENT_ON_DOWNLOAD_STOP DownloadEvent = C.EVENT_ON_DOWNLOAD_STOP
+    EVENT_ON_DOWNLOAD_COMPLETE DownloadEvent = C.EVENT_ON_DOWNLOAD_COMPLETE
+    EVENT_ON_DOWNLOAD_ERROR DownloadEvent = C.EVENT_ON_DOWNLOAD_ERROR
+	EVENT_ON_BT_DOWNLOAD_COMPLETE DownloadEvent = C.EVENT_ON_BT_DOWNLOAD_COMPLETE
 )
 
 type aria2go struct {
@@ -131,18 +131,16 @@ func (d aria2go)unpauseDownload(g Gid) {
 }
 
 //Event Callback
-type EventCallback func()
-var callback EventCallback
+type EventCallback func(DownloadEvent,Gid)
+var callback EventCallback //Have to be global due to garbage collector
 
 func (d aria2go)setEventCallback( eventCallback EventCallback){
 	callback = eventCallback
 }
 
-//export runCallBack
-func runCallBack(){
-	callback()
-}
-
-func (d aria2go)callCallback(){
-	C.callCallback()
+//export runGoCallBack
+func runGoCallBack(event C.enum_DownloadEvent, g unsafe.Pointer){
+	var gid Gid
+	gid.ptr = g
+	callback(DownloadEvent(DownloadEvent(event)),gid)
 }

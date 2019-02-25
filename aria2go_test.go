@@ -76,8 +76,11 @@ func TestAll(t *testing.T){
 }
 
 func TestCallback(t *testing.T){
-	downloader.setEventCallback(func(){
+	downloader.setEventCallback(func(event DownloadEvent,g Gid){
+	switch event {
+	case EVENT_ON_DOWNLOAD_START:
+		fmt.Printf("Download Start")
+	}
 		fmt.Printf("Test Calback")
 	})
-	downloader.callCallback()
 }

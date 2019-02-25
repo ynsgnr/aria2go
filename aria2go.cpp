@@ -15,18 +15,30 @@ int current_gid_array_length;
 aria2::Session* session = NULL;
 std::vector<std::string> uris;
 
-enum DownloadEvent {
-    EVENT_ON_DOWNLOAD_START = aria2::EVENT_ON_DOWNLOAD_START,
-    EVENT_ON_DOWNLOAD_PAUSE = aria2::EVENT_ON_DOWNLOAD_PAUSE,
-    EVENT_ON_DOWNLOAD_STOP = aria2::EVENT_ON_DOWNLOAD_STOP,
-    EVENT_ON_DOWNLOAD_COMPLETE = aria2::EVENT_ON_DOWNLOAD_COMPLETE,
-    EVENT_ON_DOWNLOAD_ERROR = aria2::EVENT_ON_DOWNLOAD_ERROR,
-    EVENT_ON_BT_DOWNLOAD_COMPLETE = aria2::EVENT_ON_BT_DOWNLOAD_COMPLETE
-};
-
-
 int downloadEventCallback(aria2::Session* s, aria2::DownloadEvent e,
                           aria2::A2Gid gid, void* userData){
+    if(session == NULL || s != session) return 0;
+    DownloadEvent event;
+    switch (e) {
+        case aria2::EVENT_ON_DOWNLOAD_START:
+            event = EVENT_ON_DOWNLOAD_START;
+            break;
+        case aria2::EVENT_ON_DOWNLOAD_PAUSE:
+            event = EVENT_ON_DOWNLOAD_PAUSE;
+            break;
+        case aria2::EVENT_ON_DOWNLOAD_STOP:
+            event = EVENT_ON_DOWNLOAD_STOP;
+            break;
+        case aria2::EVENT_ON_DOWNLOAD_COMPLETE:
+            event = EVENT_ON_DOWNLOAD_COMPLETE;
+            break;
+        case aria2::EVENT_ON_BT_DOWNLOAD_COMPLETE:
+            event = EVENT_ON_BT_DOWNLOAD_COMPLETE;
+            break;
+        default:
+            event = EVENT_ON_DOWNLOAD_ERROR;
+    }
+    runGoCallBack(event,(void*)gid);
     return 0;
 }
 
@@ -153,6 +165,4 @@ int unpauseDownload_aria2go(void* g){
     return error_code;
 }
 
-void callCallback(){
-    runCallBack();
-}
+
