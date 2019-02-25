@@ -1,6 +1,7 @@
 
 #define TO_GID(gid_to_convert) aria2::A2Gid gid = (aria2::A2Gid) gid_to_convert;
 #define ERROR_MESSAGE(message,code) {std::string error_message = message; error_message += std::to_string(code); throw error_message;}
+
 #include "aria2go.h"
 #include "aria2.h"
 #include <string.h>
@@ -9,14 +10,19 @@
 
 // C wrapper for go
 
-//Functions must take in Downloader
-//Each Downloader object must be cast to DownloaderLib pointer
-//Pointers must be DownloaderLib
-
 aria2::A2Gid* current_gid_array = NULL;
 int current_gid_array_length;
 aria2::Session* session = NULL;
 std::vector<std::string> uris;
+
+enum DownloadEvent {
+    EVENT_ON_DOWNLOAD_START = aria2::EVENT_ON_DOWNLOAD_START,
+    EVENT_ON_DOWNLOAD_PAUSE = aria2::EVENT_ON_DOWNLOAD_PAUSE,
+    EVENT_ON_DOWNLOAD_STOP = aria2::EVENT_ON_DOWNLOAD_STOP,
+    EVENT_ON_DOWNLOAD_COMPLETE = aria2::EVENT_ON_DOWNLOAD_COMPLETE,
+    EVENT_ON_DOWNLOAD_ERROR = aria2::EVENT_ON_DOWNLOAD_ERROR,
+    EVENT_ON_BT_DOWNLOAD_COMPLETE = aria2::EVENT_ON_BT_DOWNLOAD_COMPLETE
+};
 
 
 int downloadEventCallback(aria2::Session* s, aria2::DownloadEvent e,
@@ -147,3 +153,6 @@ int unpauseDownload_aria2go(void* g){
     return error_code;
 }
 
+void callCallback(){
+    runCallBack();
+}

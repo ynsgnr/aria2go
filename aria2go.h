@@ -1,6 +1,8 @@
 #ifndef ARIA2_BRIDGE
 #define ARIA2_BRIDGE
 
+    //#include "aria2.h" //Included for enums
+
     #ifdef __cplusplus
     extern "C" {
     #endif
@@ -21,6 +23,11 @@
         int removeDownload_aria2go(void*, int);
         int pauseDownload_aria2go(void*, int);
         int unpauseDownload_aria2go(void*);
+        
+         // callback function
+        void callCallback();
+        
+        extern void runCallBack();
     #ifdef __cplusplus
     }
     #endif

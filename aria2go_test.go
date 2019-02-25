@@ -4,6 +4,8 @@ import "testing"
 import "gotest.tools/assert"
 import "os"
 
+import "fmt"
+
 var downloader aria2go
 var gid Gid
 var gid_position Gid
@@ -71,4 +73,11 @@ func TestAll(t *testing.T){
 	t.Run("Unpause Force Paused Download",func(t *testing.T){
 		downloader.unpauseDownload(gid_to_pause)
 	})
+}
+
+func TestCallback(t *testing.T){
+	downloader.setEventCallback(func(){
+		fmt.Printf("Test Calback")
+	})
+	downloader.callCallback()
 }

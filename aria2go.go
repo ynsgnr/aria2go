@@ -6,6 +6,17 @@ package aria2
 import "C"
 import "unsafe"
 
+//ENUMS
+type DownloadEvent int
+const(
+	EVENT_ON_DOWNLOAD_START	DownloadEvent = 0
+	EVENT_ON_DOWNLOAD_PAUSE DownloadEvent = 1
+    EVENT_ON_DOWNLOAD_STOP DownloadEvent = 2
+    EVENT_ON_DOWNLOAD_COMPLETE DownloadEvent = 3
+    EVENT_ON_DOWNLOAD_ERROR DownloadEvent = 4
+	EVENT_ON_BT_DOWNLOAD_COMPLETE DownloadEvent = 5
+)
+
 type aria2go struct {
 	session unsafe.Pointer
 }
@@ -119,6 +130,19 @@ func (d aria2go)unpauseDownload(g Gid) {
 	C.unpauseDownload_aria2go(g.ptr)
 }
 
+//Event Callback
+type EventCallback func()
+var callback EventCallback
 
+func (d aria2go)setEventCallback( eventCallback EventCallback){
+	callback = eventCallback
+}
 
+//export runCallBack
+func runCallBack(){
+	callback()
+}
 
+func (d aria2go)callCallback(){
+	C.callCallback()
+}
