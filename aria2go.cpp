@@ -80,6 +80,7 @@ void* hexToGid_aria2go(char * s){
 }
 
 int isNull_aria2go( void* g){
+    if(!g) return true;
     return aria2::isNull( (aria2::A2Gid) g);
 }
 
