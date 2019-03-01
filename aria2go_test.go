@@ -1,10 +1,15 @@
 package aria2
 
-import "testing"
-import "gotest.tools/assert"
-import "os"
-import "fmt"
-import "time"
+import (
+	"crypto/md5"
+	"encoding/hex"
+	"io"
+	"os"
+	"testing"
+	"gotest.tools/assert"
+	"fmt"
+	"time"
+)
 
 var downloader aria2go
 var gid Gid
@@ -17,6 +22,19 @@ var stop_count = 0
 var complete_count = 0
 var BT_complete_count = 0
 var error_count = 0
+
+//Test files
+//Oldest files in internet unlikely to be deleted
+const file_path_1 string = "Image1.gif"
+const file_md5_1 string = "92d36637578442ae99c4171b88101610"
+const file_link_1 string = "https://www.w3.org/History/1989/Image1.gif" 
+const file_path_2 string = "Image2.gif"
+const file_md5_2 string = "c3d386b7effd6a520a96dc5c4eee0189"
+const file_link_2 string = "https://www.w3.org/History/1989/Image2.gif" 
+const file_path_3 string = "Image3.gif"
+const file_link_3 string =  "https://www.w3.org/History/1989/Image3.gif"
+const file_path_4 string = "proposal-magnify.gif"
+const file_link_4 string = "https://www.w3.org/History/1989/proposal-magnify.gif"
 
 func TestMain(m *testing.M){
 	downloader = New()
@@ -47,6 +65,11 @@ func TestMain(m *testing.M){
 		})
 	ret := m.Run()
 	downloader.finalize()
+	//Delete downloaded files
+	os.Remove(file_path_1)
+	os.Remove(file_path_2)
+	os.Remove(file_path_3)
+	os.Remove(file_link_4)
 	os.Exit(ret)
 }
 
@@ -54,8 +77,8 @@ func TestAll(t *testing.T){
 	t.Run("Check if function calls protected against nullptr",func(t *testing.T){
 		//Since session not initilized, expected case is nothing to be happen
 		//If test crashes on this part check pointers and add protection
-		downloader.addUri("https://www.w3.org/History/1989/Image1.gif") //oldest file in the internet, unlikely to be deleted
-		g := downloader.addUriInPosition("https://www.w3.org/History/1989/Image2.gif",0) //oldest file in the internet, unlikely to be deleted
+		downloader.addUri(file_link_1)
+		g := downloader.addUriInPosition(file_link_2,0)
 		downloader.isNull(g)
 		h := downloader.gidToHex(g)
 		downloader.hexToGid(h)
@@ -77,13 +100,11 @@ func TestAll(t *testing.T){
 		downloader.keepRunning()
 	})
 	t.Run("Add uri",func(t *testing.T){
-		//Todo maybe check files md5 with argon2
-		gid = downloader.addUri("https://www.w3.org/History/1989/Image1.gif") //oldest file in the internet, unlikely to be deleted
+		gid = downloader.addUri(file_link_1) 
 		time.Sleep(2 * time.Second)
 	})
 	t.Run("Add uri in position",func(t *testing.T){
-		//Todo maybe check files md5 with argon2
-		gid_position = downloader.addUriInPosition("https://www.w3.org/History/1989/Image2.gif",0) //oldest file in the internet, unlikely to be deleted
+		gid_position = downloader.addUriInPosition(file_link_2,0)
 		time.Sleep(2 * time.Second)
 		//Todo add get current position and check it		
 	})
@@ -113,6 +134,12 @@ func TestAll(t *testing.T){
 		assert.Equal(t,start_count,2)
 		assert.Equal(t,complete_count,2)
 	})
+	t.Run("Check Downloaded Files MD5",func(t* testing.T){
+		md5,_ := hash_file_md5(file_path_1)
+		assert.Equal(t,md5,file_md5_1)
+		md5,_ = hash_file_md5(file_path_2)
+		assert.Equal(t,md5,file_md5_2)
+	})
 	t.Run("Uri Cache",func(t *testing.T){
 		downloader.addUriToCache("Test")
 	})
@@ -120,9 +147,10 @@ func TestAll(t *testing.T){
 		downloader.clearUriCache()
 	})
 	t.Run("Add All From Cache",func(t *testing.T){
-		downloader.addUriToCache("https://www.w3.org/History/1989/Image3.gif")
-		downloader.addUriToCache("https://www.w3.org/History/1989/proposal-magnify.gif")
+		downloader.addUriToCache(file_link_3)
+		downloader.addUriToCache(file_link_4)
 		gid = downloader.addAllFromCache()
+		time.Sleep(2 * time.Second)
 	})
 	t.Run("Get Active Download",func(t *testing.T){
 		downloader.getActiveDownload()
@@ -148,4 +176,37 @@ func TestAll(t *testing.T){
 	t.Run("Unpause Force Paused Download",func(t *testing.T){
 		downloader.unpauseDownload(gid_to_pause)
 	})
+}
+
+func hash_file_md5(filePath string) (string, error) {
+	//This function from https://mrwaggel.be/post/generate-md5-hash-of-a-file-in-golang/
+	//Credits to Mr.Waggel
+	//Initialize variable returnMD5String now in case an error has to be returned
+	var returnMD5String string
+
+	//Open the passed argument and check for any error
+	file, err := os.Open(filePath)
+	if err != nil {
+		return returnMD5String, err
+	}
+
+	//Tell the program to call the following function when the current function returns
+	defer file.Close()
+
+	//Open a new hash interface to write to
+	hash := md5.New()
+
+	//Copy the file in the hash interface and check for any error
+	if _, err := io.Copy(hash, file); err != nil {
+		return returnMD5String, err
+	}
+
+	//Get the 16 bytes hash
+	hashInBytes := hash.Sum(nil)[:16]
+
+	//Convert the bytes to a string
+	returnMD5String = hex.EncodeToString(hashInBytes)
+
+	return returnMD5String, nil
+
 }
