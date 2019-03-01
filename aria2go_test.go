@@ -32,8 +32,10 @@ const file_path_2 string = "Image2.gif"
 const file_md5_2 string = "c3d386b7effd6a520a96dc5c4eee0189"
 const file_link_2 string = "https://www.w3.org/History/1989/Image2.gif" 
 const file_path_3 string = "Image3.gif"
+const file_md5_3 string = "4211beb988c8f74a9dbb546efaa52bcc"
 const file_link_3 string =  "https://www.w3.org/History/1989/Image3.gif"
 const file_path_4 string = "proposal-magnify.gif"
+const file_md5_4 string = "c3d386b7effd6a520a96dc5c4eee0189"
 const file_link_4 string = "https://www.w3.org/History/1989/proposal-magnify.gif"
 
 func TestMain(m *testing.M){
@@ -135,9 +137,11 @@ func TestAll(t *testing.T){
 		assert.Equal(t,complete_count,2)
 	})
 	t.Run("Check Downloaded Files MD5",func(t* testing.T){
-		md5,_ := hash_file_md5(file_path_1)
+		md5,err := hash_file_md5(file_path_1)
+		if(err!=nil) {t.Error("File not found: "+file_path_1)}
 		assert.Equal(t,md5,file_md5_1)
-		md5,_ = hash_file_md5(file_path_2)
+		md5,err = hash_file_md5(file_path_2)
+		if(err!=nil) {t.Error("File not found: "+file_path_2)}
 		assert.Equal(t,md5,file_md5_2)
 	})
 	t.Run("Uri Cache",func(t *testing.T){
@@ -148,9 +152,16 @@ func TestAll(t *testing.T){
 	})
 	t.Run("Add All From Cache",func(t *testing.T){
 		downloader.addUriToCache(file_link_3)
-		downloader.addUriToCache(file_link_4)
+		downloader.addUriToCache(file_link_4) //This file will not be downloaded because it does not point to the same file
 		gid = downloader.addAllFromCache()
 		time.Sleep(2 * time.Second)
+	})
+	t.Run("Check Downloaded Files From Cache MD5",func(t* testing.T){
+		md5,err := hash_file_md5(file_path_3)
+		if(err!=nil) {t.Error("File not found: "+file_path_3)}
+		assert.Equal(t,md5,file_md5_3)
+		md5,err = hash_file_md5(file_path_4)
+		if(err==nil) {t.Error("Links that does not point to same file downloaded: "+file_path_4)}
 	})
 	t.Run("Get Active Download",func(t *testing.T){
 		downloader.getActiveDownload()
