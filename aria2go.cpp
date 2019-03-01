@@ -67,9 +67,10 @@ int run_aria2go(void* s, int run_mode){
 }
 
 char* gidToHex_aria2go(void* g){
+    if(!g) return nullptr;
     TO_GID(g)
     std::string h = aria2::gidToHex(gid);
-    char* hex = new char(h.length());
+    char* hex = new char[h.length()];
     strcpy(hex,h.c_str());
     return hex;
 }
