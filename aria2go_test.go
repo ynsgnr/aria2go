@@ -42,8 +42,7 @@ func TestMain(m *testing.M){
 	downloader = New()
 	downloader.setEventCallback(func(event DownloadEvent,g Gid){
 		fmt.Printf("Callback Called:\n")
-		h := downloader.getDownloadHandle(g)
-		s := h.getStatus()
+		s := g.getStatus()
 		switch event {
 		case EVENT_ON_DOWNLOAD_START:
 			fmt.Printf("Download Start: %s\n",s)
@@ -71,7 +70,7 @@ func TestMain(m *testing.M){
 	os.Remove(file_path_1)
 	os.Remove(file_path_2)
 	os.Remove(file_path_3)
-	os.Remove(file_link_4)
+	os.Remove(file_path_4)
 	os.Exit(ret)
 }
 
@@ -123,13 +122,11 @@ func TestAll(t *testing.T){
 		assert.Equal(t,gid,gid_converted)
 	})
 	t.Run("Check Status in position",func(t *testing.T){
-		hp:=downloader.getDownloadHandle(gid_position)
-		sp:=hp.getStatus()
+		sp:=gid_position.getStatus()
 		assert.Equal(t,sp,DOWNLOAD_COMPLETE)
 	})
 	t.Run("Check Status",func(t* testing.T){
-		hp:=downloader.getDownloadHandle(gid)
-		sp:=hp.getStatus()
+		sp:=gid.getStatus()
 		assert.Equal(t,sp,DOWNLOAD_COMPLETE)
 	})
 	t.Run("Check Event Counts",func(t* testing.T){
@@ -186,6 +183,20 @@ func TestAll(t *testing.T){
 	})
 	t.Run("Unpause Force Paused Download",func(t *testing.T){
 		downloader.unpauseDownload(gid_to_pause)
+	})
+	t.Run("Gid Functions",func(t *testing.T){
+		local_gid := downloader.addUri(file_link_4)
+		//TODO find a compatible file to test these functions, and add assert
+		local_gid.getStatus()
+		local_gid.getTotalLength()
+		local_gid.getBitfield()
+		local_gid.getDownloadSpeed()
+		local_gid.getUploadSpeed()
+		local_gid.getInfoHash()
+		local_gid.getNumPieces()
+		local_gid.getConnections()
+		local_gid.getErrorCode()
+		local_gid.getNumFiles()
 	})
 }
 

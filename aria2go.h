@@ -46,7 +46,20 @@
             DOWNLOAD_REMOVED = 5
         };
         void* getDownloadHandle_aria2go(void*);
-        enum DownloadStatus getStatus_downloadHandle(void*);
+        enum DownloadStatus getStatus_gid(void*);
+    
+        int getTotalLength_gid(void*);
+        int getCompletedLength_gid(void*);
+        int getUploadLength_gid(void*);
+        char* getBitfield_gid(void*);
+        int getDownloadSpeed_gid(void*);
+        int getUploadSpeed_gid(void*);
+        char* getInfoHash_gid(void*);
+        int getPieceLength_gid(void*);
+        int getNumPieces_gid(void*);
+        int getConnections_gid(void*);
+        int getErrorCode_gid(void*);
+        int getNumFiles_gid(void*);
 
         int finalize_aria2go();
         int deinit_aria2go();

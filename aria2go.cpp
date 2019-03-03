@@ -202,9 +202,10 @@ void* getDownloadHandle_aria2go(void* g){
     return (void*) h;
 }
 
-enum DownloadStatus getStatus_downloadHandle(void* h){
-    if(!h) return DOWNLOAD_ERROR;
-    TO_HANDLE_POINTER(h)
+enum DownloadStatus getStatus_gid(void* g){
+    if(!g) return DOWNLOAD_ERROR;
+    TO_GID(g)
+    aria2::DownloadHandle* handle = aria2::getDownloadHandle(session,gid);
     aria2::DownloadStatus s = handle->getStatus();
     switch (s) {
         case aria2::DOWNLOAD_ACTIVE:
@@ -220,4 +221,115 @@ enum DownloadStatus getStatus_downloadHandle(void* h){
         default:
             return DOWNLOAD_ERROR;
     }
+    deleteDownloadHandle(handle);
+}
+
+int getTotalLength_gid(void* g){
+    if(!g) return -1;
+    TO_GID(g)
+    aria2::DownloadHandle* handle = aria2::getDownloadHandle(session,gid);
+    int r = handle->getTotalLength();
+    deleteDownloadHandle(handle);
+    return r;
+}
+
+int getCompletedLength_gid(void* g){
+    if(!g) return -1; 
+    TO_GID(g)
+    aria2::DownloadHandle* handle = aria2::getDownloadHandle(session,gid);
+    int r = handle->getCompletedLength();
+    deleteDownloadHandle(handle);
+    return r;
+}
+
+int getUploadLength_gid(void* g){
+    if(!g) return -1; 
+    TO_GID(g)
+    aria2::DownloadHandle* handle = aria2::getDownloadHandle(session,gid);
+    int r = handle->getUploadLength();
+    deleteDownloadHandle(handle);
+    return r;
+}
+
+char* getBitfield_gid(void* g){
+    if(!g) return nullptr;
+    TO_GID(g)
+    aria2::DownloadHandle* handle = aria2::getDownloadHandle(session,gid);
+    std::string b  = handle->getBitfield();
+    char* bit_field = new char[b.length()];
+    strcpy(bit_field,b.c_str());
+    return bit_field;
+}
+
+int getDownloadSpeed_gid(void* g){
+    if(!g) return -1; 
+    TO_GID(g)
+    aria2::DownloadHandle* handle = aria2::getDownloadHandle(session,gid);
+    int r = handle->getDownloadSpeed();
+    deleteDownloadHandle(handle);
+    return r;
+}
+
+int getUploadSpeed_gid(void* g){
+    if(!g) return -1; 
+    TO_GID(g)
+    aria2::DownloadHandle* handle = aria2::getDownloadHandle(session,gid);
+    int r = handle->getUploadSpeed();
+    deleteDownloadHandle(handle);
+    return r;
+}
+
+char* getInfoHash_gid(void* g){
+    if(!g) return nullptr;
+    TO_GID(g)
+    aria2::DownloadHandle* handle = aria2::getDownloadHandle(session,gid);
+    const std::string s  = handle->getBitfield();
+    char* str = new char[s.length()];
+    strcpy(str,s.c_str());
+    return str;
+}
+
+int getPieceLength_gid(void* g){
+    if(!g) return -1; 
+    TO_GID(g)
+    aria2::DownloadHandle* handle = aria2::getDownloadHandle(session,gid);
+    int r = (int)handle->getPieceLength();
+    deleteDownloadHandle(handle);
+    return r;
+}
+
+int getNumPieces_gid(void* g){
+    if(!g) return -1; 
+    TO_GID(g)
+    aria2::DownloadHandle* handle = aria2::getDownloadHandle(session,gid);
+    int r = (int)handle->getNumPieces();
+    deleteDownloadHandle(handle);
+    return r;
+}
+
+int getConnections_gid(void* g){
+    if(!g) return -1; 
+    TO_GID(g)
+    aria2::DownloadHandle* handle = aria2::getDownloadHandle(session,gid);
+    int r = (int)handle->getConnections();
+    deleteDownloadHandle(handle);
+    return r;
+}
+
+int getErrorCode_gid(void* g){
+    if(!g) return -1; 
+    TO_GID(g)
+    aria2::DownloadHandle* handle = aria2::getDownloadHandle(session,gid);
+    int r = (int)handle->getErrorCode();
+    deleteDownloadHandle(handle);
+    return r;
+}
+
+int getNumFiles_gid(void* g){
+    if(!g) return -1; 
+    TO_GID(g)
+    aria2::DownloadHandle* handle = aria2::getDownloadHandle(session,gid);
+    int r = (int)handle->getNumFiles();
+    deleteDownloadHandle(handle);
+    return r;
 }

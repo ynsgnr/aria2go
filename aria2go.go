@@ -212,13 +212,49 @@ func (d aria2go)finalize(){
 	C.deinit_aria2go()
 }
 
-func (d aria2go)getDownloadHandle(g Gid) DownloadHandle{
-	var handle DownloadHandle
-	handle.ptr = C.getDownloadHandle_aria2go(g.ptr)
-	return handle
+func (g Gid)getStatus() DownloadStatus {
+	return DownloadStatus(C.getStatus_gid(g.ptr))
 }
 
-func (h DownloadHandle)getStatus() DownloadStatus{
-	return DownloadStatus(C.getStatus_downloadHandle(h.ptr))
+func (g Gid)getTotalLength() int {
+	return int(C.getTotalLength_gid(g.ptr))
+}
+
+func (g Gid)getBitfield() string{
+	p := C.getBitfield_gid(g.ptr)
+	s := C.GoString(p)
+	C.free(unsafe.Pointer(p))
+	return s
+}
+
+func (g Gid)getDownloadSpeed() int {
+	return int(C.getDownloadSpeed_gid(g.ptr))
+}
+
+func (g Gid)getUploadSpeed() int {
+	return int(C.getUploadSpeed_gid(g.ptr))
+}
+
+func (g Gid)getInfoHash() string{
+	p := C.getInfoHash_gid(g.ptr)
+	s := C.GoString(p)
+	C.free(unsafe.Pointer(p))
+	return s
+}
+
+func (g Gid)getNumPieces() int {
+	return int(C.getNumPieces_gid(g.ptr))
+}
+
+func (g Gid)getConnections() int {
+	return int(C.getConnections_gid(g.ptr))
+}
+
+func (g Gid)getErrorCode() int {
+	return int(C.getErrorCode_gid(g.ptr))
+}
+
+func (g Gid)getNumFiles() int {
+	return int(C.getNumFiles_gid(g.ptr))
 }
 
