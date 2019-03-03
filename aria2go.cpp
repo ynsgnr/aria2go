@@ -13,7 +13,7 @@
 
 aria2::A2Gid* current_gid_array = NULL;
 int current_gid_array_length;
-aria2::Session* session = NULL;
+aria2::Session* session = nullptr;
 std::vector<std::string> uris;
 
 int downloadEventCallback(aria2::Session* s, aria2::DownloadEvent e,
@@ -47,18 +47,15 @@ void init_aria2go(){
     aria2::libraryInit();
 }
 
-void* init_aria2go_session (int keep_running){
+void init_aria2go_session (int keep_running){
     aria2::SessionConfig config;
     config.downloadEventCallback = downloadEventCallback;
     config.keepRunning = keep_running;
-    aria2::Session* s = aria2::sessionNew(aria2::KeyVals(),config);
-    if(s==NULL){ return nullptr; }
-    return (void *)s;
+    session = aria2::sessionNew(aria2::KeyVals(),config);
 }
 
-int run_aria2go(void* s, int run_mode){
-    if(s == nullptr) return -1;
-    session = (aria2::Session*)s;
+int run_aria2go(int run_mode){
+    if(session == nullptr) return -1;
     if(run_mode){
         return aria2::run(session,aria2::RUN_ONCE);
     }else{

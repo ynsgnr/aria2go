@@ -39,7 +39,6 @@ func (ds DownloadStatus) String() string {
 }
 
 type aria2go struct {
-	session unsafe.Pointer
 }
 
 type Gid struct {
@@ -50,7 +49,7 @@ type DownloadHandle struct {
 	ptr unsafe.Pointer
 }
 
-func New() (aria2go) {
+func New() aria2go {
 	var ret aria2go
 	C.init_aria2go()
 	return ret
@@ -60,36 +59,34 @@ func New() (aria2go) {
 
 func (d aria2go)init_aria2go_session(keepRunning bool){
 	C.finalize_aria2go()
-	if(keepRunning){
-		d.session = C.init_aria2go_session(C.int(1))
-	}else{
-		d.session = C.init_aria2go_session(C.int(0))
+	if keepRunning {
+		C.init_aria2go_session(C.int(1))
+	} else {
+		C.init_aria2go_session(C.int(0))
 	}
 }
 
 func (d aria2go)run() int{
 	//C.finalize_aria2go()
 	//d.session = C.init_aria2go_session(C.int(0))
-	return int(C.run_aria2go(d.session,C.int(0)))
+	return int(C.run_aria2go(C.int(0)))
 }
 
 func (d aria2go)runUntillFinished(){
 	//Returns when all downloads finisged
-	C.finalize_aria2go()
-	d.session = C.init_aria2go_session(C.int(0))
-	r:=1
-	for r == 1{
-		r = int(C.run_aria2go(d.session,C.int(1)))
+	r := 1
+	for r == 1 {
+		r = int(C.run_aria2go(C.int(1)))
 	}
 }
 
 func (d aria2go)keepRunning(){
 	C.finalize_aria2go()
-	d.session = C.init_aria2go_session(C.int(1))
-	go func(){
-		r:=1
-		for r == 1{
-			r = int(C.run_aria2go(d.session,C.int(1)))
+	C.init_aria2go_session(C.int(1))
+	go func() {
+		r := 1
+		for r == 1 {
+			r = int(C.run_aria2go(C.int(1)))
 		}
 	}()
 }
@@ -97,7 +94,7 @@ func (d aria2go)keepRunning(){
 func (d aria2go)runOnce() int{
 	//C.finalize_aria2go()
 	//d.session = C.init_aria2go_session(C.int(0))
-	return int(C.run_aria2go(d.session,C.int(1)))
+	return int(C.run_aria2go(C.int(1)))
 }
 
 func (d aria2go)gidToHex(gid Gid) string{
