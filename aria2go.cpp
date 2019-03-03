@@ -63,6 +63,14 @@ int run_aria2go(int run_mode){
     }
 }
 
+void keepruning_aria2go(){
+    if(session == nullptr) return;
+    int i=1;
+    while(i){
+        i = aria2::run(session,aria2::RUN_ONCE);
+    }
+}
+
 char* gidToHex_aria2go(void* g){
     if(!g) return nullptr;
     TO_GID(g)

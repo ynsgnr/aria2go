@@ -9,6 +9,7 @@
         void init_aria2go();
         void init_aria2go_session(int);
         int run_aria2go(int);
+        void keepruning_aria2go();
         char* gidToHex_aria2go(void*);
         void* hexToGid_aria2go(char*);
         int isNull_aria2go(void*);
