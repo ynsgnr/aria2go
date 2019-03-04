@@ -63,6 +63,11 @@
         int getFiles_gid(void*);
         void* get_element_fileData(int);
 
+        int get_index_fileData(void*);
+        char* get_path_fileData(void*);
+        int get_completedLength_fileData(void*);
+        int get_selected_fileData(void*);
+
         int finalize_aria2go();
         int deinit_aria2go();
     #ifdef __cplusplus

@@ -1,5 +1,6 @@
 
 #define TO_GID(gid_to_convert) aria2::A2Gid gid = (aria2::A2Gid) gid_to_convert;
+#define TO_FILEDATA_POINTER(fileData_to_convert) aria2::FileData* fileData = (aria2::FileData*) fileData_to_convert;
 #define TO_HANDLE_POINTER(handle_to_convert) aria2::DownloadHandle* handle = (aria2::DownloadHandle*) handle_to_convert;
 #define ERROR_MESSAGE(message,code) {std::string error_message = message; error_message += std::to_string(code); throw error_message;}
 
@@ -15,6 +16,8 @@ aria2::A2Gid* current_gid_array = nullptr;
 int current_gid_array_length = -1;
 aria2::FileData* current_file_array = nullptr;
 int current_file_array_length = -1;
+char** current_uri_array = nullptr;
+int current_uri_array_length = -1;
 aria2::Session* session = nullptr;
 std::vector<std::string> uris;
 
@@ -350,5 +353,28 @@ int getFiles_gid(void* g){
     deleteDownloadHandle(handle);
     current_file_array_length = files.size();
     current_file_array = files.data();
-    return current_gid_array_length;
+    return current_file_array_length;
+}
+
+int get_index_fileData(void* f){
+    TO_FILEDATA_POINTER(f)
+    return fileData->index;
+}
+
+
+char* get_path_fileData(void* f){
+    TO_FILEDATA_POINTER(f)
+    char* path = new char[fileData->path.length()];
+    strcpy(path,fileData->path.c_str());
+    return path;
+}
+
+int get_completedLength_fileData(void* f){
+    TO_FILEDATA_POINTER(f)
+    return (int) fileData->completedLength;
+}
+
+int get_selected_fileData(void* f){
+    TO_FILEDATA_POINTER(f)
+    return fileData->selected;
 }

@@ -9,6 +9,7 @@ import (
 	"gotest.tools/assert"
 	"fmt"
 	"time"
+    "strings"
 )
 
 var downloader aria2go
@@ -26,6 +27,7 @@ var error_count = 0
 //Test files
 //Oldest files in internet unlikely to be deleted
 const file_path_1 string = "Image1.gif"
+const file_path_1_1 string = "Image1.1.gif"
 const file_md5_1 string = "92d36637578442ae99c4171b88101610"
 const file_link_1 string = "https://www.w3.org/History/1989/Image1.gif" 
 const file_path_2 string = "Image2.gif"
@@ -68,6 +70,7 @@ func TestMain(m *testing.M){
 	downloader.finalize()
 	//Delete downloaded files
 	os.Remove(file_path_1)
+	os.Remove(file_path_1_1)
 	os.Remove(file_path_2)
 	os.Remove(file_path_3)
 	os.Remove(file_path_4)
@@ -171,21 +174,25 @@ func TestAll(t *testing.T){
 		downloader.forceRemoveDownload(gid)
 	})
 	t.Run("Pause Download",func(t *testing.T){
-		gid_to_pause = downloader.addUri("https://www.w3.org/History/1989/Image1.gif")
+		gid_to_pause = downloader.addUri(file_link_1)
 		downloader.pauseDownload(gid_to_pause)
 	})
 	t.Run("Unpause Download",func(t *testing.T){
 		downloader.unpauseDownload(gid_to_pause)
 	})
 	t.Run("Force Pause Download",func(t *testing.T){
-		gid_to_pause = downloader.addUri("https://www.w3.org/History/1989/Image1.gif")
+		gid_to_pause = downloader.addUri(file_link_1)
 		downloader.forcePauseDownload(gid_to_pause)
 	})
 	t.Run("Unpause Force Paused Download",func(t *testing.T){
 		downloader.unpauseDownload(gid_to_pause)
+		time.Sleep(2 * time.Second)
+		md5, err := hash_file_md5(file_path_1_1)
+		if(err!=nil) {t.Error("File not found: "+file_path_3)}
+		assert.Equal(t,file_md5_1,md5)
 	})
 	t.Run("Gid Functions",func(t *testing.T){
-		gid := downloader.addUri(file_link_4)
+		gid = downloader.addUri(file_link_4)
 		//TODO find a compatible file to test these functions, and add assert
 		gid.getStatus()
 		gid.getTotalLength()
@@ -197,10 +204,12 @@ func TestAll(t *testing.T){
 		gid.getConnections()
 		gid.getErrorCode()
 		gid.getNumFiles()
+		time.Sleep(2 * time.Second)
 	})
 	t.Run("File Data",func(t *testing.T){
-		gid.getFiles()
-		//TODO add path check
+		files :=  gid.getFiles()
+		s := strings.Split(files[0].path, "/")
+		assert.Equal(t,file_path_4,s[len(s)-1])
 	})
 }
 

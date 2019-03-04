@@ -46,7 +46,11 @@ type Gid struct {
 }
 
 type FileData struct {
-	ptr unsafe.Pointer
+	index int
+	path string
+	completedLength int
+	selected bool
+	uris []string
 }
 
 func New() aria2go {
@@ -259,11 +263,22 @@ func (g Gid)getNumFiles() int {
 }
 
 func (g Gid)getFiles() []FileData{
-	var files []FileData
+	var files []FileData	
+	var ptr unsafe.Pointer
 	l :=int(C.getFiles_gid(g.ptr))
 	for i := 0; i < l; i++ {
 		var f FileData
-		f.ptr = C.get_element_fileData(C.int(i))
+		ptr = C.get_element_fileData(C.int(i))
+		f.index = int(C.get_index_fileData(ptr))
+		p := C.get_path_fileData(ptr)
+		f.path = C.GoString(p)
+		C.free(unsafe.Pointer(p))
+		f.completedLength = int(C.get_completedLength_fileData(ptr))
+		if(int(C.get_selected_fileData(ptr))==0){
+			f.selected=true
+		}else{
+			f.selected=false
+		}
 		files = append(files, f)
 	}
 	return files
