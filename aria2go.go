@@ -50,7 +50,7 @@ type FileData struct {
 	path string
 	completedLength int
 	selected bool
-	uris []string
+	//uris []string
 }
 
 func New() aria2go {
@@ -279,6 +279,7 @@ func (g Gid)getFiles() []FileData{
 		}else{
 			f.selected=false
 		}
+		//Uris not added due to high cost with loops
 		files = append(files, f)
 	}
 	return files
