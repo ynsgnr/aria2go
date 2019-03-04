@@ -45,7 +45,7 @@ type Gid struct {
 	ptr unsafe.Pointer
 }
 
-type DownloadHandle struct {
+type FileData struct {
 	ptr unsafe.Pointer
 }
 
@@ -256,5 +256,16 @@ func (g Gid)getErrorCode() int {
 
 func (g Gid)getNumFiles() int {
 	return int(C.getNumFiles_gid(g.ptr))
+}
+
+func (g Gid)getFiles() []FileData{
+	var files []FileData
+	l :=int(C.getFiles_gid(g.ptr))
+	for i := 0; i < l; i++ {
+		var f FileData
+		f.ptr = C.get_element_fileData(C.int(i))
+		files = append(files, f)
+	}
+	return files
 }
 

@@ -185,18 +185,22 @@ func TestAll(t *testing.T){
 		downloader.unpauseDownload(gid_to_pause)
 	})
 	t.Run("Gid Functions",func(t *testing.T){
-		local_gid := downloader.addUri(file_link_4)
+		gid := downloader.addUri(file_link_4)
 		//TODO find a compatible file to test these functions, and add assert
-		local_gid.getStatus()
-		local_gid.getTotalLength()
-		local_gid.getBitfield()
-		local_gid.getDownloadSpeed()
-		local_gid.getUploadSpeed()
-		local_gid.getInfoHash()
-		local_gid.getNumPieces()
-		local_gid.getConnections()
-		local_gid.getErrorCode()
-		local_gid.getNumFiles()
+		gid.getStatus()
+		gid.getTotalLength()
+		gid.getBitfield()
+		gid.getDownloadSpeed()
+		gid.getUploadSpeed()
+		gid.getInfoHash()
+		gid.getNumPieces()
+		gid.getConnections()
+		gid.getErrorCode()
+		gid.getNumFiles()
+	})
+	t.Run("File Data",func(t *testing.T){
+		gid.getFiles()
+		//TODO add path check
 	})
 }
 

@@ -11,8 +11,10 @@
 
 // C wrapper for go
 
-aria2::A2Gid* current_gid_array = NULL;
-int current_gid_array_length;
+aria2::A2Gid* current_gid_array = nullptr;
+int current_gid_array_length = -1;
+aria2::FileData* current_file_array = nullptr;
+int current_file_array_length = -1;
 aria2::Session* session = nullptr;
 std::vector<std::string> uris;
 
@@ -332,4 +334,21 @@ int getNumFiles_gid(void* g){
     int r = (int)handle->getNumFiles();
     deleteDownloadHandle(handle);
     return r;
+}
+
+void* get_element_fileData(int index){
+    if(index>=current_file_array_length) throw "Out Of Index";
+    return (void*) &(current_file_array[index]);
+}
+
+int getFiles_gid(void* g){
+    if(!g) return -1; 
+    TO_GID(g)
+    aria2::DownloadHandle* handle = aria2::getDownloadHandle(session,gid);
+    if(current_file_array!=NULL) delete current_file_array;
+    std::vector<aria2::FileData> files = handle->getFiles();
+    deleteDownloadHandle(handle);
+    current_file_array_length = files.size();
+    current_file_array = files.data();
+    return current_gid_array_length;
 }

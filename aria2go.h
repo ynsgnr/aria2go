@@ -60,6 +60,8 @@
         int getConnections_gid(void*);
         int getErrorCode_gid(void*);
         int getNumFiles_gid(void*);
+        int getFiles_gid(void*);
+        void* get_element_fileData(int);
 
         int finalize_aria2go();
         int deinit_aria2go();
