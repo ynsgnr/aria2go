@@ -226,7 +226,8 @@ func TestAll(t *testing.T) {
 		gs := downloader.getGlobalStat()
 		assert.Equal(t, 6, gs.numStopped)
 	})
-	t.Run("BTMI details", func(t *testing.T) {
+	t.Run("BTMI basic", func(t *testing.T) {
+		//TODO add a torrent file and do other tests
 		btmi := gid.getBtMetaInfo()
 		assert.Equal(t, btmi.valid, false)
 	})
