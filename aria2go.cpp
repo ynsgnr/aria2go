@@ -1,6 +1,7 @@
 
 #define TO_GID(gid_to_convert) aria2::A2Gid gid = (aria2::A2Gid) gid_to_convert;
 #define TO_FILEDATA_POINTER(fileData_to_convert) aria2::FileData* fileData = (aria2::FileData*) fileData_to_convert;
+#define TO_GLOBALSTATE_POINTER(globalState_to_convert) aria2::GlobalStat* globalStat = (aria2::GlobalStat*) globalState_to_convert;
 #define TO_HANDLE_POINTER(handle_to_convert) aria2::DownloadHandle* handle = (aria2::DownloadHandle*) handle_to_convert;
 #define ERROR_MESSAGE(message,code) {std::string error_message = message; error_message += std::to_string(code); throw error_message;}
 
@@ -226,7 +227,7 @@ enum DownloadStatus getStatus_gid(void* g){
         default:
             return DOWNLOAD_ERROR;
     }
-    deleteDownloadHandle(handle);
+    aria2::deleteDownloadHandle(handle);
 }
 
 int getTotalLength_gid(void* g){
@@ -234,7 +235,7 @@ int getTotalLength_gid(void* g){
     TO_GID(g)
     aria2::DownloadHandle* handle = aria2::getDownloadHandle(session,gid);
     int r = handle->getTotalLength();
-    deleteDownloadHandle(handle);
+    aria2::deleteDownloadHandle(handle);
     return r;
 }
 
@@ -243,7 +244,7 @@ int getCompletedLength_gid(void* g){
     TO_GID(g)
     aria2::DownloadHandle* handle = aria2::getDownloadHandle(session,gid);
     int r = handle->getCompletedLength();
-    deleteDownloadHandle(handle);
+    aria2::deleteDownloadHandle(handle);
     return r;
 }
 
@@ -252,7 +253,7 @@ int getUploadLength_gid(void* g){
     TO_GID(g)
     aria2::DownloadHandle* handle = aria2::getDownloadHandle(session,gid);
     int r = handle->getUploadLength();
-    deleteDownloadHandle(handle);
+    aria2::deleteDownloadHandle(handle);
     return r;
 }
 
@@ -271,7 +272,7 @@ int getDownloadSpeed_gid(void* g){
     TO_GID(g)
     aria2::DownloadHandle* handle = aria2::getDownloadHandle(session,gid);
     int r = handle->getDownloadSpeed();
-    deleteDownloadHandle(handle);
+    aria2::deleteDownloadHandle(handle);
     return r;
 }
 
@@ -280,7 +281,7 @@ int getUploadSpeed_gid(void* g){
     TO_GID(g)
     aria2::DownloadHandle* handle = aria2::getDownloadHandle(session,gid);
     int r = handle->getUploadSpeed();
-    deleteDownloadHandle(handle);
+    aria2::deleteDownloadHandle(handle);
     return r;
 }
 
@@ -299,7 +300,7 @@ int getPieceLength_gid(void* g){
     TO_GID(g)
     aria2::DownloadHandle* handle = aria2::getDownloadHandle(session,gid);
     int r = (int)handle->getPieceLength();
-    deleteDownloadHandle(handle);
+    aria2::deleteDownloadHandle(handle);
     return r;
 }
 
@@ -308,7 +309,7 @@ int getNumPieces_gid(void* g){
     TO_GID(g)
     aria2::DownloadHandle* handle = aria2::getDownloadHandle(session,gid);
     int r = (int)handle->getNumPieces();
-    deleteDownloadHandle(handle);
+    aria2::deleteDownloadHandle(handle);
     return r;
 }
 
@@ -317,7 +318,7 @@ int getConnections_gid(void* g){
     TO_GID(g)
     aria2::DownloadHandle* handle = aria2::getDownloadHandle(session,gid);
     int r = (int)handle->getConnections();
-    deleteDownloadHandle(handle);
+    aria2::deleteDownloadHandle(handle);
     return r;
 }
 
@@ -326,7 +327,7 @@ int getErrorCode_gid(void* g){
     TO_GID(g)
     aria2::DownloadHandle* handle = aria2::getDownloadHandle(session,gid);
     int r = (int)handle->getErrorCode();
-    deleteDownloadHandle(handle);
+    aria2::deleteDownloadHandle(handle);
     return r;
 }
 
@@ -335,7 +336,7 @@ int getNumFiles_gid(void* g){
     TO_GID(g)
     aria2::DownloadHandle* handle = aria2::getDownloadHandle(session,gid);
     int r = (int)handle->getNumFiles();
-    deleteDownloadHandle(handle);
+    aria2::deleteDownloadHandle(handle);
     return r;
 }
 
