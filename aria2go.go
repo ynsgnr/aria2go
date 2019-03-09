@@ -290,6 +290,13 @@ func (g Gid) getNumFiles() int {
 	return int(C.getNumFiles_gid(g.ptr))
 }
 
+func (g Gid) getDir() string {
+	p := C.getDir_gid(g.ptr)
+	s := C.GoString(p)
+	C.free(unsafe.Pointer(p))
+	return s
+}
+
 func (g Gid) getBtMetaInfo() BtMetaInfoData {
 	var btMetaInfo BtMetaInfoData
 	btmi := C.getBtMetaInfo_gid(g.ptr)

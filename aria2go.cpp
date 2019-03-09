@@ -296,6 +296,17 @@ char* getInfoHash_gid(void* g){
     return str;
 }
 
+char* getDir_gid(void* g){
+    if(!g) return nullptr;
+    TO_GID(g)
+    aria2::DownloadHandle* handle = aria2::getDownloadHandle(session,gid);
+    const std::string s  = handle->getDir();
+    char* str = new char[s.length()];
+    strcpy(str,s.c_str());
+    return str;
+}
+
+
 int getPieceLength_gid(void* g){
     if(!g) return -1; 
     TO_GID(g)

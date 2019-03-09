@@ -56,6 +56,7 @@
         int getDownloadSpeed_gid(void*);
         int getUploadSpeed_gid(void*);
         char* getInfoHash_gid(void*);
+        char* getDir_gid(void*);
         int getPieceLength_gid(void*);
         int getNumPieces_gid(void*);
         int getConnections_gid(void*);
