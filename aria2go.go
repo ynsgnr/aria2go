@@ -240,8 +240,16 @@ func (g Gid) getStatus() DownloadStatus {
 	return DownloadStatus(C.getStatus_gid(g.ptr))
 }
 
-func (g Gid) getTotalLength() int {
-	return int(C.getTotalLength_gid(g.ptr))
+func (g Gid) getTotalLength() int64 {
+	return int64(C.getTotalLength_gid(g.ptr))
+}
+
+func (g Gid) getCompletedLength() int64 {
+	return int64(C.getCompletedLength_gid(g.ptr))
+}
+
+func (g Gid) getUploadLength() int64 {
+	return int64(C.getUploadLength_gid(g.ptr))
 }
 
 func (g Gid) getBitfield() string {

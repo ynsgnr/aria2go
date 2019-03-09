@@ -49,9 +49,9 @@
         void* getDownloadHandle_aria2go(void*);
         enum DownloadStatus getStatus_gid(void*);
     
-        int getTotalLength_gid(void*);
-        int getCompletedLength_gid(void*);
-        int getUploadLength_gid(void*);
+        long int getTotalLength_gid(void*);
+        long int getCompletedLength_gid(void*);
+        long int getUploadLength_gid(void*);
         char* getBitfield_gid(void*);
         int getDownloadSpeed_gid(void*);
         int getUploadSpeed_gid(void*);

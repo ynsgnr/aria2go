@@ -231,29 +231,29 @@ enum DownloadStatus getStatus_gid(void* g){
     aria2::deleteDownloadHandle(handle);
 }
 
-int getTotalLength_gid(void* g){
+long int getTotalLength_gid(void* g){
     if(!g) return -1;
     TO_GID(g)
     aria2::DownloadHandle* handle = aria2::getDownloadHandle(session,gid);
-    int r = handle->getTotalLength();
+    long int r = handle->getTotalLength();
     aria2::deleteDownloadHandle(handle);
     return r;
 }
 
-int getCompletedLength_gid(void* g){
+long int getCompletedLength_gid(void* g){
     if(!g) return -1; 
     TO_GID(g)
     aria2::DownloadHandle* handle = aria2::getDownloadHandle(session,gid);
-    int r = handle->getCompletedLength();
+    long int r = handle->getCompletedLength();
     aria2::deleteDownloadHandle(handle);
     return r;
 }
 
-int getUploadLength_gid(void* g){
+long int getUploadLength_gid(void* g){
     if(!g) return -1; 
     TO_GID(g)
     aria2::DownloadHandle* handle = aria2::getDownloadHandle(session,gid);
-    int r = handle->getUploadLength();
+    long int r = handle->getUploadLength();
     aria2::deleteDownloadHandle(handle);
     return r;
 }
