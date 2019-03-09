@@ -63,6 +63,9 @@
         int getFiles_gid(void*);
         void* get_element_fileData(int);
 
+        void* getBtMetaInfo_gid(void*);
+        char* get_comment_BtMetaInfo(void*);
+
         int get_index_fileData(void*);
         char* get_path_fileData(void*);
         int get_completedLength_fileData(void*);

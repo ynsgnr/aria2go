@@ -226,6 +226,10 @@ func TestAll(t *testing.T) {
 		gs := downloader.getGlobalStat()
 		assert.Equal(t, 6, gs.numStopped)
 	})
+	t.Run("BTMI details", func(t *testing.T) {
+		btmi := gid.getBtMetaInfo()
+		assert.Equal(t, btmi.valid, false)
+	})
 }
 
 func hash_file_md5(filePath string) (string, error) {

@@ -5,7 +5,10 @@ package aria2
 // #include "aria2go.h"
 // #include <stdlib.h>
 import "C"
-import "unsafe"
+import (
+	"time"
+	"unsafe"
+)
 
 //ENUMS
 type DownloadEvent int
@@ -63,6 +66,16 @@ type GlobalStat struct {
 	numActive     int
 	numWaiting    int
 	numStopped    int
+}
+
+type BtMetaInfoData struct {
+	//announce list not implemented
+	comment      string
+	creationData time.Time
+	multiMod     bool
+	singleMod    bool
+	name         string
+	valid        bool
 }
 
 func New() aria2go {
@@ -275,6 +288,20 @@ func (g Gid) getErrorCode() int {
 
 func (g Gid) getNumFiles() int {
 	return int(C.getNumFiles_gid(g.ptr))
+}
+
+func (g Gid) getBtMetaInfo() BtMetaInfoData {
+	var btMetaInfo BtMetaInfoData
+	btmi := C.getBtMetaInfo_gid(g.ptr)
+	if btmi == nil {
+		btMetaInfo.valid = false
+	} else {
+		c := C.get_comment_BtMetaInfo(btmi)
+		btMetaInfo.comment = C.GoString(c)
+		C.free(unsafe.Pointer(c))
+		C.free(btmi)
+	}
+	return btMetaInfo
 }
 
 func (g Gid) getFiles() []FileData {

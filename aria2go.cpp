@@ -2,6 +2,7 @@
 #define TO_GID(gid_to_convert) aria2::A2Gid gid = (aria2::A2Gid) gid_to_convert;
 #define TO_FILEDATA_POINTER(fileData_to_convert) aria2::FileData* fileData = (aria2::FileData*) fileData_to_convert;
 #define TO_GLOBALSTATE_POINTER(globalState_to_convert) aria2::GlobalStat* globalStat = (aria2::GlobalStat*) globalState_to_convert;
+#define TO_BTMI_POINTER(BTMI_to_convert) aria2::BtMetaInfoData* btMetaInfo = (aria2::BtMetaInfoData*) BTMI_to_convert;
 #define TO_HANDLE_POINTER(handle_to_convert) aria2::DownloadHandle* handle = (aria2::DownloadHandle*) handle_to_convert;
 #define ERROR_MESSAGE(message,code) {std::string error_message = message; error_message += std::to_string(code); throw error_message;}
 
@@ -338,6 +339,29 @@ int getNumFiles_gid(void* g){
     int r = (int)handle->getNumFiles();
     aria2::deleteDownloadHandle(handle);
     return r;
+}
+
+void* getBtMetaInfo_gid(void* g){
+    if(!g) return nullptr; 
+    TO_GID(g)
+    aria2::DownloadHandle* handle = aria2::getDownloadHandle(session,gid);
+    aria2::BtMetaInfoData* torrent_data = new aria2::BtMetaInfoData;
+    try {
+        *torrent_data = handle->getBtMetaInfo();
+    }catch(const std::exception& e){
+        delete torrent_data;
+        aria2::deleteDownloadHandle(handle);
+        return nullptr;
+    }
+    aria2::deleteDownloadHandle(handle);
+    return (void*) torrent_data;
+}
+
+char* get_comment_BtMetaInfo(void* btmi){
+    TO_BTMI_POINTER(btmi)
+    char* path = new char[btMetaInfo->comment.length()];
+    strcpy(path,btMetaInfo->comment.c_str());
+    return path;
 }
 
 void* get_element_fileData(int index){
