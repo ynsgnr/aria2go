@@ -420,9 +420,15 @@ char* get_path_fileData(void* f){
     return path;
 }
 
-int get_completedLength_fileData(void* f){
+
+long int get_length_fileData(void* f){
     TO_FILEDATA_POINTER(f)
-    return (int) fileData->completedLength;
+    return (long int) fileData->length;
+}
+
+long int get_completedLength_fileData(void* f){
+    TO_FILEDATA_POINTER(f)
+    return (long int) fileData->completedLength;
 }
 
 int get_selected_fileData(void* f){

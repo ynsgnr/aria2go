@@ -72,7 +72,8 @@
 
         int get_index_fileData(void*);
         char* get_path_fileData(void*);
-        int get_completedLength_fileData(void*);
+        long int get_length_fileData(void*);
+        long int get_completedLength_fileData(void*);
         int get_selected_fileData(void*);
 
         void* getGlobalStat_aria2go();

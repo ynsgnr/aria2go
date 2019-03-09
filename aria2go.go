@@ -55,7 +55,8 @@ type Gid struct {
 type FileData struct {
 	index           int
 	path            string
-	completedLength int
+	length          int64
+	completedLength int64
 	selected        bool
 	//uris []string
 }
@@ -332,7 +333,8 @@ func (g Gid) getFiles() []FileData {
 		p := C.get_path_fileData(ptr)
 		f.path = C.GoString(p)
 		C.free(unsafe.Pointer(p))
-		f.completedLength = int(C.get_completedLength_fileData(ptr))
+		f.length = int64(C.get_length_fileData(ptr))
+		f.completedLength = int64(C.get_completedLength_fileData(ptr))
 		if int(C.get_selected_fileData(ptr)) == 0 {
 			f.selected = true
 		} else {
