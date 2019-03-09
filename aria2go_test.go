@@ -209,7 +209,11 @@ func TestAll(t *testing.T){
 	t.Run("File Data",func(t *testing.T){
 		files :=  gid.getFiles()
 		s := strings.Split(files[0].path, "/")
-		assert.Equal(t,file_path_4,s[len(s)-1])
+		assert.Equal(t, file_path_4, s[len(s)-1])
+	})
+	t.Run("Global Stats", func(t *testing.T) {
+		gs := downloader.getGlobalStat()
+		assert.Equal(t, 6, gs.numStopped)
 	})
 }
 

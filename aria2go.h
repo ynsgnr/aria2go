@@ -68,6 +68,13 @@
         int get_completedLength_fileData(void*);
         int get_selected_fileData(void*);
 
+        void* getGlobalStat_aria2go();
+        int get_downloadSpeed_globalStat(void*);
+        int get_uploadSpeed_globalStat(void*);
+        int get_numActive_globalStat(void*);
+        int get_numWaiting_globalStat(void*);
+        int get_numStopped_globalStat(void*);
+
         int finalize_aria2go();
         int deinit_aria2go();
     #ifdef __cplusplus

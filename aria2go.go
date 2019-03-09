@@ -285,3 +285,14 @@ func (g Gid)getFiles() []FileData{
 	return files
 }
 
+func (d aria2go) getGlobalStat() GlobalStat {
+	var globalStat GlobalStat
+	gs := C.getGlobalStat_aria2go()
+	globalStat.downloadSpeed = int(C.get_downloadSpeed_globalStat(gs))
+	globalStat.uploadSpeed = int(C.get_uploadSpeed_globalStat(gs))
+	globalStat.numActive = int(C.get_numActive_globalStat(gs))
+	globalStat.numWaiting = int(C.get_numWaiting_globalStat(gs))
+	globalStat.numStopped = int(C.get_numStopped_globalStat(gs))
+	C.free(gs)
+	return globalStat
+}

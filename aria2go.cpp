@@ -378,3 +378,34 @@ int get_selected_fileData(void* f){
     TO_FILEDATA_POINTER(f)
     return fileData->selected;
 }
+
+void* getGlobalStat_aria2go(){
+    aria2::GlobalStat* gs = new aria2::GlobalStat;
+    *gs = aria2::getGlobalStat(session);
+    return (void*)gs;
+}
+
+int get_downloadSpeed_globalStat(void* gs){
+    TO_GLOBALSTATE_POINTER(gs)
+    return globalStat->downloadSpeed;
+}
+
+int get_uploadSpeed_globalStat(void* gs){
+    TO_GLOBALSTATE_POINTER(gs)
+    return globalStat->uploadSpeed;
+}
+
+int get_numActive_globalStat(void* gs){
+    TO_GLOBALSTATE_POINTER(gs)
+    return globalStat->numActive;
+}
+
+int get_numWaiting_globalStat(void* gs){
+    TO_GLOBALSTATE_POINTER(gs)
+    return globalStat->numWaiting;
+}
+
+int get_numStopped_globalStat(void* gs){
+    TO_GLOBALSTATE_POINTER(gs)
+    return globalStat->numStopped;
+}
