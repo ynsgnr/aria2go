@@ -85,8 +85,6 @@ func New() aria2go {
 	return ret
 }
 
-//TODO separate session function bc we can not add uris until initilized
-
 func (d aria2go) init_aria2go_session(keepRunning bool) {
 	C.finalize_aria2go()
 	if keepRunning {
@@ -97,17 +95,12 @@ func (d aria2go) init_aria2go_session(keepRunning bool) {
 }
 
 func (d aria2go) run() int {
-	//C.finalize_aria2go()
-	//d.session = C.init_aria2go_session(C.int(0))
 	return int(C.run_aria2go(C.int(0)))
 }
 
 func (d aria2go) runUntillFinished() {
 	//Returns when all downloads finisged
-	r := 1
-	for r == 1 {
-		r = int(C.run_aria2go(C.int(1)))
-	}
+	C.keepruning_aria2go()
 }
 
 func (d aria2go) keepRunning() {
@@ -119,8 +112,6 @@ func (d aria2go) keepRunning() {
 }
 
 func (d aria2go) runOnce() int {
-	//C.finalize_aria2go()
-	//d.session = C.init_aria2go_session(C.int(0))
 	return int(C.run_aria2go(C.int(1)))
 }
 
