@@ -71,7 +71,7 @@ type GlobalStat struct {
 type BtMetaInfoData struct {
 	//announce list not implemented
 	comment      string
-	creationData time.Time
+	creationDate time.Time
 	multiMod     bool
 	singleMod    bool
 	name         string
@@ -296,9 +296,26 @@ func (g Gid) getBtMetaInfo() BtMetaInfoData {
 	if btmi == nil {
 		btMetaInfo.valid = false
 	} else {
+		//Comment
 		c := C.get_comment_BtMetaInfo(btmi)
 		btMetaInfo.comment = C.GoString(c)
 		C.free(unsafe.Pointer(c))
+		//Creation Time
+		btMetaInfo.creationDate = time.Unix(int64(C.get_creationDate_BtMetaInfo(btmi)), 0)
+		//Mode
+		mode := int(C.get_mode_BtMetaInfo(btmi))
+		btMetaInfo.singleMod = false
+		btMetaInfo.multiMod = false
+		if mode == 0 {
+			btMetaInfo.singleMod = true
+		} else if mode == 1 {
+			btMetaInfo.multiMod = true
+		}
+		//Name
+		n := C.get_name_BtMetaInfo(btmi)
+		btMetaInfo.name = C.GoString(n)
+		C.free(unsafe.Pointer(n))
+
 		C.free(btmi)
 	}
 	return btMetaInfo

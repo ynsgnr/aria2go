@@ -64,7 +64,11 @@
         void* get_element_fileData(int);
 
         void* getBtMetaInfo_gid(void*);
+
         char* get_comment_BtMetaInfo(void*);
+        long int get_creationDate_BtMetaInfo(void*);
+        int get_mode_BtMetaInfo(void*);
+        char* get_name_BtMetaInfo(void*);
 
         int get_index_fileData(void*);
         char* get_path_fileData(void*);

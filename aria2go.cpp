@@ -359,9 +359,35 @@ void* getBtMetaInfo_gid(void* g){
 
 char* get_comment_BtMetaInfo(void* btmi){
     TO_BTMI_POINTER(btmi)
-    char* path = new char[btMetaInfo->comment.length()];
-    strcpy(path,btMetaInfo->comment.c_str());
-    return path;
+    char* comment = new char[btMetaInfo->comment.length()];
+    strcpy(comment,btMetaInfo->comment.c_str());
+    return comment;
+}
+
+long int get_creationDate_BtMetaInfo(void* btmi){
+    TO_BTMI_POINTER(btmi)
+    return static_cast<long int>(btMetaInfo->creationDate);
+}
+
+int get_mode_BtMetaInfo(void* btmi){
+    TO_BTMI_POINTER(btmi)
+    switch(btMetaInfo->mode){
+        case aria2::BT_FILE_MODE_NONE:
+            return -1;
+        case aria2::BT_FILE_MODE_SINGLE:
+            return 0;
+        case aria2::BT_FILE_MODE_MULTI:
+            return 1;
+        default:
+            return -2;
+    }
+}
+
+char* get_name_BtMetaInfo(void* btmi){
+    TO_BTMI_POINTER(btmi)
+    char* name = new char[btMetaInfo->name.length()];
+    strcpy(name,btMetaInfo->name.c_str());
+    return name;
 }
 
 void* get_element_fileData(int index){
