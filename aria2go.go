@@ -226,6 +226,9 @@ func (d aria2go) setEventCallback(eventCallback EventCallback) {
 
 //export runGoCallBack
 func runGoCallBack(event C.enum_DownloadEvent, g unsafe.Pointer) {
+	if callback == nil {
+		return
+	}
 	var gid Gid
 	gid.ptr = g
 	callback(DownloadEvent(event), gid)
