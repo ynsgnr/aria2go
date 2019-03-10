@@ -1,4 +1,4 @@
-package aria2
+package aria2go
 
 import (
 	"crypto/md5"

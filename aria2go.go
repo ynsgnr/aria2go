@@ -1,4 +1,4 @@
-package aria2
+package aria2go
 
 // #cgo CXXFLAGS: -std=c++11
 // #cgo LDFLAGS: -L. -l aria2
