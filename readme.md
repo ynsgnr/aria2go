@@ -1,10 +1,31 @@
 # What Is This?
 This go module adds ability to use [aria2](https://github.com/aria2/aria2). Aria2 is a powerful downloader tool that can use split download streams to speed up process and can download variaty of links and files including bittorent and metafile.
 
+# Basic Usage
+```golang
+import (
+   "github.com/ynsgnr/aria2go"
+   "time"
+   )
+
+downloader := aria2go.New()
+downloader.KeepRunning()
+defer downloader.Finalize()
+
+gid := downloader.AddUri(file_link_1)
+
+while(gid.GetStatus()!=aria2go.DOWNLOAD_COMPLETE){
+   time.Sleep(1 * time.Second)
+}
+```
+
+You might need to add `~\go\src\github.com\ynsgnr\aria2go` to your path to be able to make program work without installing all the dependencies.
+
 # How to use
 To use this library, it needs to be initilized with `New()` function. Recomended way to use aria2go is to use `(aria2go) keepRunning()` function to keep running session within a go routine. When aria2go no longer needed or program finishes `(aria2go) finalize()` function must be called to prevent memory leaks. `(aria2go) keepRunning()` must be called before performing any other process.
 
 If you want to custumize aria2go run methods you can use  `(aria2go) init_aria2go_session(keepRunning bool)` and other run functions to initilize and run a session. If you are not using the recomended way you must initilize a session first then use run functions as your will. If you run a function without initilizing a session first It will return immediately with an empty or nil value. For mor information you can check [libaria2 functions documentation](https://aria2.github.io/manual/en/html/libaria2.html#functions).
+
 
 # Structs
  - ## aria2go
