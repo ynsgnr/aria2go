@@ -1,7 +1,5 @@
 package aria2go
 
-// #cgo CXXFLAGS: -std=c++11
-// #cgo LDFLAGS: -L. -l aria2
 // #include "aria2go.h"
 // #include <stdlib.h>
 import "C"
