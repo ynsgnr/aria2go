@@ -3,13 +3,13 @@ package aria2go
 /*
 // Linux Build Tags
 // ----------------
-#cgo linux CXXFLAGS: -I${SRCDIR}/library -std=c++11
-#cgo linux LDFLAGS: -L${SRCDIR}/library -l aria2 -l:libcares.a -l:libexpat.a -l:libgmp.a -l:libsqlite3.a -l:libssh2.a -l:libz.a
+#cgo linux CXXFLAGS: -I${SRCDIR}/library -std=c++11 
+#cgo linux LDFLAGS: -L${SRCDIR}/library -l aria2
 
 // Windows Build Tags
 // ----------------
 #cgo windows CXXFLAGS: -I${SRCDIR}/library -std=c++11
-#cgo windows LDFLAGS: -L${SRCDIR}/library -l:libaria2.dll.a -l:libcares.dll.a -l:libexpat.dll.a -l:libgmp.dll.a -l:libsqlite3.dll.a -l:libssh2.dll.a
+#cgo windows LDFLAGS: -L${SRCDIR}/library -l:libaria2.lib -l:libcares.lib -l:libexpat.lib -l:libgmp.lib -l:libsqlite3.lib -l:libssh2.lib -l:libz.lib -lws2_32 -lbcrypt -liphlpapi -lcrypt32 -lsecur32
 
 // Darwin Build Tags
 // ----------------
