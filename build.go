@@ -4,7 +4,7 @@ package aria2go
 // Linux Build Tags
 // ----------------
 #cgo linux CXXFLAGS: -I${SRCDIR}/library -std=c++11 
-#cgo linux LDFLAGS: -L${SRCDIR}/library -l aria2
+#cgo linux LDFLAGS: -L${SRCDIR}/library -l:libaria2.a -l:libcares.a -l:libssh2.a -lxml2 -l:libsqlite3.a -l:libz.a -lssl -lcrypto -ldl
 
 // Windows Build Tags
 // ----------------
