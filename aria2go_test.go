@@ -68,7 +68,6 @@ func TestMain(m *testing.M) {
 		}
 	})
 	ret := m.Run()
-	downloader.Finalize()
 	//Delete downloaded files
 	os.Remove(file_path_1)
 	os.Remove(file_path_1_1)
@@ -76,6 +75,7 @@ func TestMain(m *testing.M) {
 	os.Remove(file_path_3)
 	os.Remove(file_path_4)
 	os.Exit(ret)
+	downloader.Finalize()
 }
 
 func TestAll(t *testing.T) {

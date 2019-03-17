@@ -13,8 +13,8 @@ package aria2go
 
 // Darwin Build Tags
 // ----------------ß
-#cgo darwin CXXFLAGS: -I${SRCDIR}/library/darwin -std=c++11
-#cgo darwin LDFLAGS: -framework FlutterEmbedder
+#cgo darwin CXXFLAGS: -I${SRCDIR}/library -std=c++11
+#cgo darwin LDFLAGS:  -L${SRCDIR}/library/darwin ${SRCDIR}/library/darwin/libaria2.a ${SRCDIR}/library/darwin/libcares.a ${SRCDIR}/library/darwin/libcrypto.a ${SRCDIR}/library/darwin/libgmp.a ${SRCDIR}/library/darwin/libssh2.a ${SRCDIR}/library/darwin/libxml2.a ${SRCDIR}/library/darwin/libsqlite3.a ${SRCDIR}/library/darwin/libz.a ${SRCDIR}/library/darwin/libssl.a -ldl -framework CoreFoundation -framework Security -liconv
 
 */
 import "C"

@@ -1,3 +1,6 @@
 image*
 .DS_Store
 .vscode/settings.json
+library/dependencies_linux/
+library/dependencies_win/
+library/dependencies_darwin/
